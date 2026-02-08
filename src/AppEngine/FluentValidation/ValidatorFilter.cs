@@ -12,7 +12,7 @@ internal class ValidatorFilter<TModel>(IValidator<TModel> validator, IOptions<Va
 
     public async ValueTask<object?> InvokeAsync(EndpointFilterInvocationContext context, EndpointFilterDelegate next)
     {
-        if (context.Arguments.FirstOrDefault(a => a?.GetType() == typeof(TModel)) is not TModel input)
+        if (context.Arguments.FirstOrDefault(a => a is TModel) is not TModel input)
         {
             return TypedResults.BadRequest();
         }
