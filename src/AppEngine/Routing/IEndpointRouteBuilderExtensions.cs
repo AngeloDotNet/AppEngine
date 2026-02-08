@@ -22,7 +22,12 @@ public static class IEndpointRouteBuilderExtensions
 
         foreach (var endpointRouteHandlerBuilderType in endpointRouteHandlerBuilderTypes)
         {
-            var mapEndpointsMethod = endpointRouteHandlerBuilderType.GetMethod(nameof(IEndpointRouteHandlerBuilder.MapEndpoints), BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)!;
+            var mapEndpointsMethod = endpointRouteHandlerBuilderType.GetMethod(
+                nameof(IEndpointRouteHandlerBuilder.MapEndpoints),
+                BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy,
+                binder: null,
+                types: new[] { typeof(IEndpointRouteBuilder) },
+                modifiers: null)!;
             mapEndpointsMethod.Invoke(null, [endpoints]);
         }
     }
