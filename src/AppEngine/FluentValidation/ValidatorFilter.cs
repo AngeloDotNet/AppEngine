@@ -26,17 +26,24 @@ internal class ValidatorFilter<TModel>(IValidator<TModel> validator, IOptions<Va
 
         var errors = validationResult.ToDictionary();
 
-        var result = TypedResults.Problem(
+        var extensions = new Dictionary<string, object?>(StringComparer.Ordinal)
+        {
+            ["traceId"] = Activity.Current?.Id ?? context.HttpContext.TraceIdentifier
+        };
+
+        if (validationOptions.ErrorResponseFormat != ErrorResponseFormat.Default)
+        {
+            extensions["errors"] = errors
+                .SelectMany(e => e.Value.Select(m => new { Name = e.Key, Message = m }))
+                .ToArray();
+        }
+
+        return TypedResults.ValidationProblem(
+            errors: errors,
             statusCode: StatusCodes.Status400BadRequest,
             instance: context.HttpContext.Request.Path,
             title: validationOptions.ValidationErrorTitleMessageFactory?.Invoke(context, errors) ?? "One or more validation errors occurred",
-            extensions: new Dictionary<string, object?>(StringComparer.Ordinal)
-            {
-                ["traceId"] = Activity.Current?.Id ?? context.HttpContext.TraceIdentifier,
-                ["errors"] = validationOptions.ErrorResponseFormat == ErrorResponseFormat.Default ? errors : errors.SelectMany(e => e.Value.Select(m => new { Name = e.Key, Message = m })).ToArray()
-            }
+            extensions: extensions
         );
-
-        return result;
     }
 }
