@@ -1,0 +1,9 @@
+<Solution>
+  <Folder Name="/Solution Items/">
+    <File Path=".editorconfig" />
+    <File Path=".gitignore" />
+    <File Path="LICENSE" />
+    <File Path="README.md" />
+  </Folder>
+  <Project Path="src/AppEngine/AppEngine.csproj" Id="e88d11a8-0450-4042-ac47-55588ec249ab" />
+</Solution>
