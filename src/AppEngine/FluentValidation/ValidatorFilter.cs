@@ -12,7 +12,7 @@ internal class ValidatorFilter<TModel>(IValidator<TModel> validator, IOptions<Va
 
     public async ValueTask<object?> InvokeAsync(EndpointFilterInvocationContext context, EndpointFilterDelegate next)
     {
-        if (context.Arguments.FirstOrDefault(a => a is TModel) is not TModel input)
+        if (context.Arguments.FirstOrDefault(a => a?.GetType() == typeof(TModel)) is not TModel input)
         {
             return TypedResults.BadRequest();
         }
@@ -26,24 +26,17 @@ internal class ValidatorFilter<TModel>(IValidator<TModel> validator, IOptions<Va
 
         var errors = validationResult.ToDictionary();
 
-        var extensions = new Dictionary<string, object?>(StringComparer.Ordinal)
-        {
-            ["traceId"] = Activity.Current?.Id ?? context.HttpContext.TraceIdentifier
-        };
-
-        if (validationOptions.ErrorResponseFormat != ErrorResponseFormat.Default)
-        {
-            extensions["errors"] = errors
-                .SelectMany(e => e.Value.Select(m => new { Name = e.Key, Message = m }))
-                .ToArray();
-        }
-
-        return TypedResults.ValidationProblem(
-            errors: errors,
+        var result = TypedResults.Problem(
             statusCode: StatusCodes.Status400BadRequest,
             instance: context.HttpContext.Request.Path,
             title: validationOptions.ValidationErrorTitleMessageFactory?.Invoke(context, errors) ?? "One or more validation errors occurred",
-            extensions: extensions
+            extensions: new Dictionary<string, object?>(StringComparer.Ordinal)
+            {
+                ["traceId"] = Activity.Current?.Id ?? context.HttpContext.TraceIdentifier,
+                ["errors"] = validationOptions.ErrorResponseFormat == ErrorResponseFormat.Default ? errors : errors.SelectMany(e => e.Value.Select(m => new { Name = e.Key, Message = m })).ToArray()
+            }
         );
+
+        return result;
     }
 }
