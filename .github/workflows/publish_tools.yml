@@ -1,5 +1,4 @@
-name: Publish AppEngine on GitHub
-#name: Publish AppEngine on GitHub and NuGet
+name: Publish AppEngine Tools on GitHub
  
 permissions:
   contents: write
@@ -8,14 +7,14 @@ permissions:
 on:
   push:
     branches: [ main ]
-    paths: [ 'src/AppEngine/**' ]
+    paths: [ 'src/AppEngine.Tools/**' ]
   workflow_dispatch:
       
 env:
   NET_VERSION: '10.x'
-  PROJECT_NAME: src/AppEngine
-  PROJECT_FILE: AppEngine.csproj
-  RELEASE_NAME: AppEngine
+  PROJECT_NAME: src/AppEngine.Tools
+  PROJECT_FILE: AppEngine.Tools.csproj
+  RELEASE_NAME: AppEngine.Tools
 
 jobs:
   build:
