@@ -1,5 +1,4 @@
-name: Publish AppEngine on GitHub
-#name: Publish AppEngine on GitHub and NuGet
+name: Publish AppEngine Tools on GitHub
  
 permissions:
   contents: write
@@ -8,14 +7,14 @@ permissions:
 on:
   push:
     branches: [ main ]
-    paths: [ 'src/AppEngine/**' ]
+    paths: [ 'src/AppEngine.Tools/**' ]
   workflow_dispatch:
       
 env:
   NET_VERSION: '10.x'
-  PROJECT_NAME: src/AppEngine
-  PROJECT_FILE: AppEngine.csproj
-  RELEASE_NAME: AppEngine
+  PROJECT_NAME: src/AppEngine.Tools
+  PROJECT_FILE: AppEngine.Tools.csproj
+  RELEASE_NAME: AppEngine.Tools
 
 jobs:
   build:
@@ -51,11 +50,25 @@ jobs:
 
     # - name: Publish on NuGet
     #   run: dotnet nuget push *.nupkg -k ${{ secrets.NUGET_API_KEY }} -s https://api.nuget.org/v3/index.json --no-symbols --skip-duplicate
-      
-    - name: Publish on GitHub
+
+    - name: Configure GitHub Packages feed (use PAT from Secrets)
+      env:
+        OWNER: ${{ github.repository_owner }}
       run: |
-        dotnet nuget add source --username ${{ github.actor }} --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json"
-        dotnet nuget push "**/*.nupkg" --source github --api-key ${{ secrets.GITHUB_TOKEN }} --skip-duplicate
+        # Add the GitHub Packages feed with the PAT stored in secrets.NUGET_PAT.
+        # This stores the credential on the runner (not in the repo).
+        dotnet nuget add source --username ${{ github.actor }} --password "${{ secrets.NUGET_PAT }}" --store-password-in-clear-text --name github "https://nuget.pkg.github.com/${OWNER}/index.json"
+
+    - name: Publish on GitHub Packages
+      run: |
+        # Push all nupkg files to the 'github' source configured above.
+        # --api-key is required syntactically by dotnet push, we provide the PAT but the credential is already stored.
+        dotnet nuget push "**/*.nupkg" --source github --api-key "${{ secrets.NUGET_PAT }}" --skip-duplicate
+      
+    #- name: Publish on GitHub
+    #  run: |
+    #    dotnet nuget add source --username ${{ github.actor }} --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json"
+    #    dotnet nuget push "**/*.nupkg" --source github --api-key ${{ secrets.GITHUB_TOKEN }} --skip-duplicate
 
     # - name: Create release
     #   uses: softprops/action-gh-release@v2
