@@ -51,13 +51,22 @@ jobs:
     # - name: Publish on NuGet
     #   run: dotnet nuget push *.nupkg -k ${{ secrets.NUGET_API_KEY }} -s https://api.nuget.org/v3/index.json --no-symbols --skip-duplicate
 
-    - name: Configure GitHub Packages feed (use PAT from Secrets)
-      env:
-        OWNER: ${{ github.repository_owner }}
+    - name: Create NuGet.Config with PAT
       run: |
-        # Add the GitHub Packages feed with the PAT stored in secrets.NUGET_PAT.
-        # This stores the credential on the runner (not in the repo).
-        dotnet nuget add source --username ${{ github.actor }} --password "${{ secrets.NUGET_PAT }}" --store-password-in-clear-text --name github "https://nuget.pkg.github.com/${OWNER}/index.json"
+        cat > NuGet.Config <<EOF
+        <?xml version="1.0" encoding="utf-8"?>
+        <configuration>
+          <packageSources>
+            <add key="github" value="https://nuget.pkg.github.com/OWNER/index.json" />
+          </packageSources>
+          <packageSourceCredentials>
+            <github>
+              <add key="Username" value="${{ github.actor }}" />
+              <add key="ClearTextPassword" value="${{ secrets.NUGET_PAT }}" />
+            </github>
+          </packageSourceCredentials>
+        </configuration>
+        EOF
 
     - name: Publish on GitHub Packages
       run: |
