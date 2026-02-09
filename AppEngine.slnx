@@ -3,7 +3,6 @@
     <File Path=".editorconfig" />
     <File Path=".gitignore" />
     <File Path="LICENSE" />
-    <File Path="NuGet.config" />
     <File Path="README.md" />
   </Folder>
   <Project Path="src/AppEngine.Tools/AppEngine.Tools.csproj" Id="4ac3f771-7d07-48a8-a214-ba39131b6145" />

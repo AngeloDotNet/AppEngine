@@ -50,34 +50,11 @@ jobs:
 
     # - name: Publish on NuGet
     #   run: dotnet nuget push *.nupkg -k ${{ secrets.NUGET_API_KEY }} -s https://api.nuget.org/v3/index.json --no-symbols --skip-duplicate
-
-    - name: Create NuGet.Config with PAT
-      run: |
-        cat > NuGet.Config <<EOF
-        <?xml version="1.0" encoding="utf-8"?>
-        <configuration>
-          <packageSources>
-            <add key="github" value="https://nuget.pkg.github.com/OWNER/index.json" />
-          </packageSources>
-          <packageSourceCredentials>
-            <github>
-              <add key="Username" value="${{ github.actor }}" />
-              <add key="ClearTextPassword" value="${{ secrets.NUGET_PAT }}" />
-            </github>
-          </packageSourceCredentials>
-        </configuration>
-        EOF
-
-    - name: Publish on GitHub Packages
-      run: |
-        # Push all nupkg files to the 'github' source configured above.
-        # --api-key is required syntactically by dotnet push, we provide the PAT but the credential is already stored.
-        dotnet nuget push "**/*.nupkg" --source github --api-key "${{ secrets.NUGET_PAT }}" --skip-duplicate
       
-    #- name: Publish on GitHub
-    #  run: |
-    #    dotnet nuget add source --username ${{ github.actor }} --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json"
-    #    dotnet nuget push "**/*.nupkg" --source github --api-key ${{ secrets.GITHUB_TOKEN }} --skip-duplicate
+    - name: Publish on GitHub
+      run: |
+        dotnet nuget add source --username ${{ github.actor }} --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json"
+        dotnet nuget push "**/*.nupkg" --source github --api-key ${{ secrets.GITHUB_TOKEN }} --skip-duplicate
 
     # - name: Create release
     #   uses: softprops/action-gh-release@v2

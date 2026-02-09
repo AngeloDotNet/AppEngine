@@ -20,9 +20,4 @@
     <ItemGroup>
         <FrameworkReference Include="Microsoft.AspNetCore.App" />
     </ItemGroup>
-
-    <ItemGroup>
-      <PackageReference Include="AppEngine" Version="1.0.3" />
-    </ItemGroup>
-
 </Project>
