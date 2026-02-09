@@ -3,6 +3,7 @@ name: Publish AppEngine on GitHub
  
 permissions:
   contents: write
+  packages: write
   
 on:
   push:
@@ -14,7 +15,6 @@ env:
   NET_VERSION: '10.x'
   PROJECT_NAME: src/AppEngine
   PROJECT_FILE: AppEngine.csproj
-  TAG_NAME: AppEngine
   RELEASE_NAME: AppEngine
 
 jobs:
@@ -54,16 +54,17 @@ jobs:
       
     - name: Publish on GitHub
       run: |
-        dotnet nuget add source --username USERNAME --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json"
-        dotnet nuget push **\*.nupkg --source github --api-key ${{ secrets.GITHUB_TOKEN }} --skip-duplicate
+        dotnet nuget add source --username ${{ github.actor }} --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json"
+        dotnet nuget push "**/*.nupkg" --source github --api-key ${{ secrets.GITHUB_TOKEN }} --skip-duplicate
 
     # - name: Create release
-    #   uses: actions/create-release@v1
+    #   uses: softprops/action-gh-release@v2
     #   env:
     #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
     #   with:
-    #     tag_name: ${{ env.TAG_NAME }}_v${{ steps.nbgv.outputs.NuGetPackageVersion }}
-    #     release_name: ${{ env.RELEASE_NAME }} ${{ steps.nbgv.outputs.NuGetPackageVersion }}
-    #     body: AppEngine - A lightweight development engine for .NET web applications, designed to simplify and provide essential tools for developing web apps.
-    #     draft: false
-    #     prerelease: false
+    #       tag_name: v${{ steps.nbgv.outputs.NuGetPackageVersion }}
+    #       name: ${{ env.RELEASE_NAME }} ${{ steps.nbgv.outputs.NuGetPackageVersion }}
+    #       body: ${{ env.RELEASE_NAME }} - A lightweight development engine for .NET web applications, designed to simplify and provide essential tools for developing web apps.
+    #       draft: false
+    #       prerelease: false
+    #       generate_release_notes: true
