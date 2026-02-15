@@ -54,7 +54,3 @@ The project is constantly evolving. Contributions are always welcome. Feel free 
 2. Create a feature branch (starting from the develop branch)
 3. Make your changes
 4. Submit a pull requests (targeting develop)
-
-## ☕ Buy Me a Coffee
-
-If you find this project helpful, consider [buying me a coffee](https://www.buymeacoffee.com/angelodotnet)!
