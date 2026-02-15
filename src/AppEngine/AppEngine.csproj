@@ -9,7 +9,7 @@
         <Product>AppEngine</Product>
         <Title>AppEngine</Title>
         <Description>A lightweight development engine for .NET web applications, designed to simplify and provide essential tools for developing web apps.</Description>
-        <PackageId>AppEngine</PackageId>
+        <PackageId>TinyAppEngine</PackageId>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageProjectUrl>https://github.com/AngeloDotNet/AppEngine</PackageProjectUrl>
         <RepositoryType>git</RepositoryType>
