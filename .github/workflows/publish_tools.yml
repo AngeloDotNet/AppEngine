@@ -48,8 +48,8 @@ jobs:
     - name: Package
       run: dotnet pack -c Release -o . '${{ env.PROJECT_NAME }}/${{ env.PROJECT_FILE }}'
 
-    # - name: Publish on NuGet
-    #   run: dotnet nuget push *.nupkg -k ${{ secrets.NUGET_API_KEY }} -s https://api.nuget.org/v3/index.json --no-symbols --skip-duplicate
+    - name: Publish on NuGet
+      run: dotnet nuget push *.nupkg -k ${{ secrets.NUGET_API_KEY }} -s https://api.nuget.org/v3/index.json --no-symbols --skip-duplicate
       
     - name: Publish on GitHub
       run: |
