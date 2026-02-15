@@ -10,7 +10,7 @@
         <Product>AppEngine.Tools</Product>
         <Title>AppEngine Tools</Title>
         <Description>A lightweight development engine for .NET web applications, designed to simplify and provide essential tools for developing web apps.</Description>
-        <PackageId>AppEngine.Tools</PackageId>
+        <PackageId>TinyAppEngine.Tools</PackageId>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageProjectUrl>https://github.com/AngeloDotNet/AppEngine</PackageProjectUrl>
         <RepositoryType>git</RepositoryType>
@@ -19,5 +19,9 @@
 
     <ItemGroup>
         <FrameworkReference Include="Microsoft.AspNetCore.App" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Include="..\..\README.md" Pack="true" PackagePath="\" />
     </ItemGroup>
 </Project>

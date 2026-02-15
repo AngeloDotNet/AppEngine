@@ -1,4 +1,4 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
     <PropertyGroup>
         <TargetFramework>net10.0</TargetFramework>
         <ImplicitUsings>enable</ImplicitUsings>
@@ -9,7 +9,7 @@
         <Product>AppEngine</Product>
         <Title>AppEngine</Title>
         <Description>A lightweight development engine for .NET web applications, designed to simplify and provide essential tools for developing web apps.</Description>
-        <PackageId>AppEngine</PackageId>
+        <PackageId>TinyAppEngine</PackageId>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageProjectUrl>https://github.com/AngeloDotNet/AppEngine</PackageProjectUrl>
         <RepositoryType>git</RepositoryType>
@@ -22,5 +22,9 @@
 
     <ItemGroup>
         <PackageReference Include="FluentValidation" Version="12.1.1" />
+    </ItemGroup>
+
+    <ItemGroup>
+        <None Include="..\..\README.md" Pack="true" PackagePath="\" />
     </ItemGroup>
 </Project>
