@@ -12,6 +12,7 @@ AppEngine is a lightweight development engine for .NET web applications, designe
 
 - .NET 10.0 SDK (latest version)
 
+<!--
 ## 📁 Project Structure
 
 ```
@@ -37,6 +38,7 @@ AppEngine/
 ├── Nuget.config                 # NuGet package sources and configurations
 └── AppEngine.slnx               # Solution file for the entire project
 ```
+-->
 
 ## 📜 License
 
