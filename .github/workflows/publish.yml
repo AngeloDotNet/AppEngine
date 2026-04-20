@@ -1,4 +1,4 @@
-name: Publish AppEngine on GitHub
+name: Publish AppEngine on BaGet
 #name: Publish AppEngine on GitHub and NuGet
  
 permissions:
@@ -24,11 +24,13 @@ jobs:
 
     steps:
     - name: Checkout
+      # uses: actions/checkout@v4
       uses: actions/checkout@v6
       with:
         fetch-depth: 0 # avoid shallow clone so nbgv can do its work.
 
     - name: Setup .NET SDK ${{ env.NET_VERSION }}
+      # uses: actions/setup-dotnet@v4
       uses: actions/setup-dotnet@v5
       with:
         dotnet-version: ${{ env.NET_VERSION }}
@@ -41,6 +43,7 @@ jobs:
     #  run: dotnet test
 
     - name: Nerdbank.GitVersioning 
+      # uses: dotnet/nbgv@v0.4
       uses: dotnet/nbgv@v0.5
       id: nbgv
       with:        
@@ -50,12 +53,13 @@ jobs:
       run: dotnet pack -c Release -o . '${{ env.PROJECT_NAME }}/${{ env.PROJECT_FILE }}'
 
     - name: Publish on NuGet
-      run: dotnet nuget push *.nupkg -k ${{ secrets.NUGET_API_KEY }} -s https://api.nuget.org/v3/index.json --no-symbols --skip-duplicate
+      run: dotnet nuget push *.nupkg -k ${{ secrets.BAGET_API_KEY }} -s http://nuget.aepserver.it/v3/index.json --allow-insecure-connections --no-symbols --skip-duplicate
+      # run: dotnet nuget push *.nupkg -k ${{ secrets.NUGET_API_KEY }} -s https://api.nuget.org/v3/index.json --no-symbols --skip-duplicate
       
-    - name: Publish on GitHub
-      run: |
-        dotnet nuget add source --username ${{ github.actor }} --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json"
-        dotnet nuget push "**/*.nupkg" --source github --api-key ${{ secrets.GITHUB_TOKEN }} --skip-duplicate
+    # - name: Publish on GitHub
+    #   run: |
+    #     dotnet nuget add source --username ${{ github.actor }} --password ${{ secrets.GITHUB_TOKEN }} --store-password-in-clear-text --name github "https://nuget.pkg.github.com/${{ github.repository_owner }}/index.json"
+    #     dotnet nuget push "**/*.nupkg" --source github --api-key ${{ secrets.GITHUB_TOKEN }} --skip-duplicate
 
     # - name: Create release
     #   uses: softprops/action-gh-release@v2
