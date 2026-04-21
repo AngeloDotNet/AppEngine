@@ -11,7 +11,10 @@ internal class DefaultExceptionHandler(IProblemDetailsService problemDetailsServ
 {
     public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception, CancellationToken cancellationToken)
     {
-        httpContext.Response.StatusCode = exception is BadHttpRequestException badHttpRequestException ? badHttpRequestException.StatusCode : httpContext.Response.StatusCode;
+        if (exception is BadHttpRequestException badHttpRequestException)
+        {
+            httpContext.Response.StatusCode = badHttpRequestException.StatusCode;
+        }
 
         var problemDetails = new ProblemDetails
         {
