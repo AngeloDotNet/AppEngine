@@ -27,7 +27,8 @@ internal class ValidatorFilter<TModel>(IValidator<TModel> validator, IOptions<Va
         var errors = validationResult.ToDictionary();
 
         var result = TypedResults.Problem(
-            statusCode: StatusCodes.Status400BadRequest,
+            //statusCode: StatusCodes.Status400BadRequest,
+            statusCode: StatusCodes.Status422UnprocessableEntity,
             instance: context.HttpContext.Request.Path,
             title: validationOptions.ValidationErrorTitleMessageFactory?.Invoke(context, errors) ?? "One or more validation errors occurred",
             extensions: new Dictionary<string, object?>(StringComparer.Ordinal)
