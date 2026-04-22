@@ -1,9 +1,9 @@
 ﻿using System.Text.Json.Serialization;
-using AppEngine.Serialization;
+using AppEngine.Tools.Serialization;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace AppEngine.Extensions;
+namespace AppEngine.Tools.Extensions;
 
 public static class ServiceCollectionExtensions
 {
