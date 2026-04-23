@@ -22,20 +22,13 @@ public class DefaultResponseOperationTransformer : IOpenApiOperationTransformer
         operation.Responses.TryAdd(DefaultResponseCode, new OpenApiResponse
         {
             Description = DefaultDescription,
-            Content = new Dictionary<string, IOpenApiMediaType>
+            Content = new Dictionary<string, OpenApiMediaType>
             {
-                [MediaTypeNames.Application.ProblemJson] = new OpenApiMediaType()
+                [MediaTypeNames.Application.ProblemJson] = new()
                 {
                     Schema = new OpenApiSchemaReference(nameof(ProblemDetails), context.Document)
                 }
             }
-            //Content = new Dictionary<string, OpenApiMediaType>
-            //{
-            //    [MediaTypeNames.Application.ProblemJson] = new()
-            //    {
-            //        Schema = new OpenApiSchemaReference(nameof(ProblemDetails), context.Document)
-            //    }
-            //}
         });
     }
 }
