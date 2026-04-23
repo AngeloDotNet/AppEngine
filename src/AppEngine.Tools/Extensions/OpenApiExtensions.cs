@@ -11,17 +11,20 @@ namespace AppEngine.Tools.Extensions;
 
 public static class OpenApiExtensions
 {
-    public static IServiceCollection AddOpenApiOperationParameters(this IServiceCollection services, Action<OpenApiOperationOptions> setupAction)
+    extension(IServiceCollection services)
     {
-        ArgumentNullException.ThrowIfNull(services);
-        ArgumentNullException.ThrowIfNull(setupAction);
+        public IServiceCollection AddOpenApiOperationParameters(Action<OpenApiOperationOptions> setupAction)
+        {
+            ArgumentNullException.ThrowIfNull(services);
+            ArgumentNullException.ThrowIfNull(setupAction);
 
-        var parameters = new OpenApiOperationOptions();
-        setupAction.Invoke(parameters);
+            var parameters = new OpenApiOperationOptions();
+            setupAction.Invoke(parameters);
 
-        services.AddTransient(_ => parameters);
+            services.AddTransient(_ => parameters);
 
-        return services;
+            return services;
+        }
     }
 
     extension(OpenApiOptions options)
@@ -32,21 +35,24 @@ public static class OpenApiExtensions
         public OpenApiOptions AddOperationParameters() => options.AddOperationTransformer<OpenApiParametersOperationFilter>();
     }
 
-    //public static void AddSimpleAuthentication(this OpenApiOptions options, IConfiguration configuration, string sectionName = "Authentication")
-    public static void AddSimpleAuthentication(this OpenApiOptions options, IConfiguration configuration, string sectionName)
+    extension(OpenApiOptions options)
     {
-        options.AddSimpleAuthentication(configuration, sectionName, [], []);
-    }
+        //public static void AddSimpleAuthentication(this OpenApiOptions options, IConfiguration configuration, string sectionName = "Authentication")
+        public void AddSimpleAuthentication(IConfiguration configuration, string sectionName)
+        {
+            options.AddSimpleAuthentication(configuration, sectionName, [], []);
+        }
 
-    public static void AddSimpleAuthentication(this OpenApiOptions options, IConfiguration configuration, string sectionName,
-        IEnumerable<OpenApiSecurityRequirement> addSecurityRequirements, IEnumerable<string> addSecurityDefinitionNames)
-    {
-        ArgumentNullException.ThrowIfNull(options);
-        ArgumentNullException.ThrowIfNull(configuration);
-        ArgumentException.ThrowIfNullOrWhiteSpace(sectionName);
+        public void AddSimpleAuthentication(IConfiguration configuration, string sectionName,
+            IEnumerable<OpenApiSecurityRequirement> addSecurityRequirements, IEnumerable<string> addSecurityDefinitionNames)
+        {
+            ArgumentNullException.ThrowIfNull(options);
+            ArgumentNullException.ThrowIfNull(configuration);
+            ArgumentException.ThrowIfNullOrWhiteSpace(sectionName);
 
-        options.AddDocumentTransformer(new AuthenticationDocumentTransformer(configuration, sectionName, addSecurityRequirements, addSecurityDefinitionNames));
-        options.AddDocumentTransformer<DefaultResponseDocumentTransformer>();
-        options.AddOperationTransformer<AuthenticationOperationTransformer>();
+            options.AddDocumentTransformer(new AuthenticationDocumentTransformer(configuration, sectionName, addSecurityRequirements, addSecurityDefinitionNames));
+            options.AddDocumentTransformer<DefaultResponseDocumentTransformer>();
+            options.AddOperationTransformer<AuthenticationOperationTransformer>();
+        }
     }
 }

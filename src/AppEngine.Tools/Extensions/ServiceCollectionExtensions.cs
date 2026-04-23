@@ -7,30 +7,33 @@ namespace AppEngine.Tools.Extensions;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddHttpJsonOptions(this IServiceCollection services)
+    extension(IServiceCollection services)
     {
-        services.ConfigureHttpJsonOptions(options =>
+        public IServiceCollection AddHttpJsonOptions()
         {
-            options.SerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
-            options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
-            options.SerializerOptions.Converters.Add(new UtcDateTimeConverter());
-        });
+            services.ConfigureHttpJsonOptions(options =>
+            {
+                options.SerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+                options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
+                options.SerializerOptions.Converters.Add(new UtcDateTimeConverter());
+            });
 
-        return services;
-    }
+            return services;
+        }
 
-    public static T? ConfigureAndGet<T>(this IServiceCollection services, IConfiguration configuration, string sectionName) where T : class
-    {
-        ArgumentNullException.ThrowIfNull(services);
-        ArgumentNullException.ThrowIfNull(configuration);
-        ArgumentNullException.ThrowIfNull(sectionName);
+        public T? ConfigureAndGet<T>(IConfiguration configuration, string sectionName) where T : class
+        {
+            ArgumentNullException.ThrowIfNull(services);
+            ArgumentNullException.ThrowIfNull(configuration);
+            ArgumentNullException.ThrowIfNull(sectionName);
 
-        var section = configuration.GetSection(sectionName);
-        services.Configure<T>(section);
+            var section = configuration.GetSection(sectionName);
+            services.Configure<T>(section);
 
-        var settings = Activator.CreateInstance<T>();
-        section.Bind(settings);
+            var settings = Activator.CreateInstance<T>();
+            section.Bind(settings);
 
-        return settings;
+            return settings;
+        }
     }
 }
