@@ -5,11 +5,14 @@ namespace AppEngine.Tools;
 
 public static class ExceptionHandlerExtensions
 {
-    public static IServiceCollection AddDefaultExceptionHandler(this IServiceCollection services)
+    extension(IServiceCollection services)
     {
-        services.AddProblemDetails();
-        services.AddExceptionHandler<DefaultExceptionHandler>();
+        public IServiceCollection AddDefaultExceptionHandler()
+        {
+            services.AddProblemDetails();
+            services.AddExceptionHandler<DefaultExceptionHandler>();
 
-        return services;
+            return services;
+        }
     }
 }

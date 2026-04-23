@@ -7,22 +7,23 @@ namespace AppEngine.Tools;
 
 public static class LocalizationExtensions
 {
-    public static IServiceCollection AddRequestLocalization(this IServiceCollection services, params string[] cultures)
-        => services.AddRequestLocalization(cultures, null);
-
-    public static IServiceCollection AddRequestLocalization(this IServiceCollection services, IEnumerable<string> cultures,
-        Action<IList<IRequestCultureProvider>>? providersConfiguration)
+    extension(IServiceCollection services)
     {
-        var supportedCultures = cultures.Select((string c) => new CultureInfo(c)).ToList();
+        public IServiceCollection AddRequestLocalization(params string[] cultures) => services.AddRequestLocalization(cultures, null);
 
-        services.Configure(delegate (RequestLocalizationOptions options)
+        public IServiceCollection AddRequestLocalization(IEnumerable<string> cultures, Action<IList<IRequestCultureProvider>>? providersConfiguration)
         {
-            options.SupportedCultures = supportedCultures;
-            options.SupportedUICultures = supportedCultures;
-            options.DefaultRequestCulture = new RequestCulture(supportedCultures.First());
-            providersConfiguration?.Invoke(options.RequestCultureProviders);
-        });
+            var supportedCultures = cultures.Select((string c) => new CultureInfo(c)).ToList();
 
-        return services;
+            services.Configure(delegate (RequestLocalizationOptions options)
+            {
+                options.SupportedCultures = supportedCultures;
+                options.SupportedUICultures = supportedCultures;
+                options.DefaultRequestCulture = new RequestCulture(supportedCultures.First());
+                providersConfiguration?.Invoke(options.RequestCultureProviders);
+            });
+
+            return services;
+        }
     }
 }

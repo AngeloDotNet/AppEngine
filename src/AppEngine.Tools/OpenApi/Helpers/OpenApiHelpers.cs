@@ -8,27 +8,20 @@ internal static class OpenApiHelpers
 {
     public static OpenApiSecurityRequirement CreateSecurityRequirement(string name, OpenApiDocument document)
         => new()
-            {
-                { new OpenApiSecuritySchemeReference(name, document), [] }
-            };
+        {
+            { new OpenApiSecuritySchemeReference(name, document), [] }
+        };
 
     public static OpenApiResponse CreateResponse(string description)
         => new()
         {
             Description = description,
-            Content = new Dictionary<string, IOpenApiMediaType>
+            Content = new Dictionary<string, OpenApiMediaType>
             {
-                [MediaTypeNames.Application.ProblemJson] = new OpenApiMediaType()
+                [MediaTypeNames.Application.ProblemJson] = new()
                 {
                     Schema = new OpenApiSchemaReference(nameof(ProblemDetails))
                 }
             }
-            //Content = new Dictionary<string, OpenApiMediaType>
-            //{
-            //    [MediaTypeNames.Application.ProblemJson] = new()
-            //    {
-            //        Schema = new OpenApiSchemaReference(nameof(ProblemDetails))
-            //    }
-            //}
         };
 }
