@@ -15,6 +15,7 @@
         <PackageProjectUrl>https://github.com/AngeloDotNet/AppEngine</PackageProjectUrl>
         <RepositoryType>git</RepositoryType>
         <RepositoryBranch>main</RepositoryBranch>
+        <PackageReadmeFile>README.md</PackageReadmeFile>
     </PropertyGroup>
 
     <ItemGroup>
