@@ -5,33 +5,33 @@ namespace AppEngine.Routing;
 
 public static class IEndpointRouteBuilderExtensions
 {
-    public static void MapEndpoints(this IEndpointRouteBuilder endpoints, Func<Type, bool>? predicate = null)
-        => MapEndpoints(endpoints, Assembly.GetCallingAssembly(), predicate);
-
-    public static void MapEndpoints(this IEndpointRouteBuilder endpoints, Assembly assembly, Func<Type, bool>? predicate = null)
+    extension(IEndpointRouteBuilder endpoints)
     {
-        ArgumentNullException.ThrowIfNull(endpoints);
-        ArgumentNullException.ThrowIfNull(assembly);
+        public void MapEndpoints(Func<Type, bool>? predicate = null) => MapEndpoints(endpoints, Assembly.GetCallingAssembly(), predicate);
 
-        var endpointRouteHandlerBuilderInterfaceType = typeof(IEndpointRouteHandlerBuilder);
-
-        var endpointRouteHandlerBuilderTypes = assembly.GetTypes().Where(t =>
-            t.IsClass && !t.IsAbstract && !t.IsGenericType
-            && endpointRouteHandlerBuilderInterfaceType.IsAssignableFrom(t)
-            && (predicate?.Invoke(t) ?? true));
-
-        foreach (var endpointRouteHandlerBuilderType in endpointRouteHandlerBuilderTypes)
+        public void MapEndpoints(Assembly assembly, Func<Type, bool>? predicate = null)
         {
-            var mapEndpointsMethod = endpointRouteHandlerBuilderType
-                .GetMethod(nameof(IEndpointRouteHandlerBuilder.MapEndpoints), BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)!;
+            ArgumentNullException.ThrowIfNull(endpoints);
+            ArgumentNullException.ThrowIfNull(assembly);
 
-            mapEndpointsMethod.Invoke(null, [endpoints]);
+            var endpointRouteHandlerBuilderInterfaceType = typeof(IEndpointRouteHandlerBuilder);
+
+            var endpointRouteHandlerBuilderTypes = assembly.GetTypes().Where(t
+                => t.IsClass && !t.IsAbstract && !t.IsGenericType && endpointRouteHandlerBuilderInterfaceType.IsAssignableFrom(t)
+                    && (predicate?.Invoke(t) ?? true));
+
+            foreach (var endpointRouteHandlerBuilderType in endpointRouteHandlerBuilderTypes)
+            {
+                var mapEndpointsMethod = endpointRouteHandlerBuilderType.GetMethod(nameof(IEndpointRouteHandlerBuilder.MapEndpoints),
+                    BindingFlags.Public | BindingFlags.Static | BindingFlags.FlattenHierarchy)!;
+
+                mapEndpointsMethod.Invoke(null, [endpoints]);
+            }
         }
+
+        public void MapEndpointsFromAssemblyContaining<T>(Func<Type, bool>? predicate = null) where T : class
+            => MapEndpoints(endpoints, typeof(T).Assembly, predicate);
+
+        public void MapEndpoints<T>() where T : IEndpointRouteHandlerBuilder => T.MapEndpoints(endpoints);
     }
-
-    public static void MapEndpointsFromAssemblyContaining<T>(this IEndpointRouteBuilder endpoints, Func<Type, bool>? predicate = null) where T : class
-        => MapEndpoints(endpoints, typeof(T).Assembly, predicate);
-
-    public static void MapEndpoints<T>(this IEndpointRouteBuilder endpoints) where T : IEndpointRouteHandlerBuilder
-        => T.MapEndpoints(endpoints);
 }

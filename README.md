@@ -6,47 +6,100 @@ A lightweight development engine for .NET web applications, designed to simplify
 
 AppEngine is a lightweight development engine for .NET web applications, designed to simplify and provide essential tools for developing web apps. It offers a collection of utilities, extensions, and validation mechanisms to streamline the development process and enhance productivity.
 
+## 📁 Project Structure
+
+```
+AppEngine/
+├── .github/                            # GitHub configuration files
+│   ├── instructions/                   # Instructions for contributing and using the project
+│   │   └── copilot.instructions.md     # Instructions for using GitHub Copilot with the project
+│   │
+│   ├── workflows/                      # GitHub Actions workflows for CI/CD
+│   │   ├── linter.yml                  # Workflow for code linting and formatting checks
+│   │   ├── publish.yml                 # Workflow for publishing the project to Baget
+│   │   └── publish_tools.yml           # Workflow for publishing the tools package to Baget
+│   │
+│   └── dependabot.yml                  # Dependabot configuration for automated dependency updates
+│
+├── src/
+│   ├── AppEngine/                      # Core functionalities and utilities
+│   │   ├──  Enums/                     # Enumeration types used across the project
+│   │   ├──  Extensions/                # Extension methods for various classes and types
+│   │   ├──  FluentValidation/          # Fluent validation rules and validators
+│   │   ├──  Logging/                   # Logging utilities and configurations
+│   │   ├──  Middleware/                # Custom middleware components
+│   │   ├──  Routing/                   # Routing configurations and related classes
+│   │   ├──  Settings/                  # Configuration classes and settings management
+│   │   └──  Validation/                # Validation logic and classes
+│   │
+│   ├── AppEngine.Tools/                # Command-line tools and utilities
+│   │   ├──  ExceptionHandlers/         # Custom exception handlers and related classes
+│   │   ├──  Extensions/                # Extension methods specific to the tools
+│   │   ├──  OpenApi/                   # OpenAPI related utilities and classes
+│   │   │    ├── Filters/               # OpenAPI filters and related classes
+│   │   │    ├── Helpers/               # OpenAPI helper classes and utilities
+│   │   │    ├── Options/               # OpenAPI options and configuration classes
+│   │   │    └── SimpleAuthentication/  # OpenAPI extensions and utilities for simple authentication
+│   │   │
+│   │   ├──  OperationResult/           # Classes related to operation results and responses
+│   │   │    └── AspNetCore.Http/       # Operation result classes specific to ASP.NET Core HTTP responses
+│   │   │
+│   │   ├──  Serialization/             # Serialization utilities and classes
+│   │   ├──  SimpleAuthentication/      # Simple authentication utilities and classes
+│   │   │    ├── Abstractions/          # Abstractions and interfaces for authentication
+│   │   │    └── JWTBearer/             # JWT Bearer authentication related classes and utilities
+│   │   │
+│   │   └──  TimeZoneService/           # Time zone related utilities and services
+│   │        └── Interfaces/            # Interfaces for time zone services
+│   │   
+│   └── Directory.Build.props           # Shared MSBuild properties
+│
+├── .editorconfig                       # Code style and formatting rules
+├── .gitignore                          # Git ignore file
+├── LICENSE                             # License information
+├── README.md                           # Project documentation
+└── AppEngine.slnx                      # Solution file for the entire project
+```
+
 ## 🛠️ Installation
 
 ### Prerequisites
 
 - .NET 10.0 SDK (latest version)
 
-## 📁 Project Structure
+### Setup
 
+The libraries are available on [Baget](http://nuget.aepserver.it), just search for _TinyAppEngine_ or _TinyAppEngine.Tools_ in the Package Manager GUI or run the following command in the .NET CLI:
+
+```shell
+dotnet add package TinyAppEngine
+
+dotnet add package TinyAppEngine.Tools
 ```
-AppEngine/
-├── .github/                        # GitHub configuration files
-│   ├── instructions/               # Instructions for contributing and using the project
-│   │   └── copilot.instructions.md # Instructions for using GitHub Copilot with the project
-│   │
-│   ├── workflows/                  # GitHub Actions workflows for CI/CD
-│   │   ├── linter.yml              # Workflow for code linting and formatting checks
-│   │   ├── publish.yml             # Workflow for publishing the project to Baget
-│   │   └── publish_tools.yml       # Workflow for publishing the tools package to Baget
-│   │
-│   └── dependabot.yml              # Dependabot configuration for automated dependency updates
-│   
-├── src/
-│   ├── AppEngine/                  # Core functionalities and utilities
-│   │   ├──  Enums/                 # Enumeration types used across the project
-│   │   ├──  Extensions/            # Extension methods for various classes and types
-│   │   ├──  FluentValidation/      # Fluent validation rules and validators
-│   │   ├──  Routing/               # Routing configurations and related classes
-│   │   ├──  Serialization/         # Custom serializers and deserializers
-│   │   └──  Validation/            # Validation logic and classes
-│   │
-│   ├── AppEngine.Tools/            # Command-line tools and utilities
-│   │   ├──  OperationResult/       # Classes related to operation results and responses
-│   │   └──  SimpleAuth/            # Simple authentication utilities and classes
-│   │
-│   └── Directory.Build.props       # Shared MSBuild properties
-│
-├── .editorconfig                   # Code style and formatting rules
-├── .gitignore                      # Git ignore file
-├── LICENSE                         # License information
-├── README.md                       # Project documentation
-└── AppEngine.slnx                  # Solution file for the entire project
+
+> [!NOTE]
+> It is necessary to configure nuget.config in order to be able to install nuget packages from Baget without problems, below is an example of configuration
+
+```xml
+﻿<?xml version="1.0" encoding="utf-8"?>
+<configuration>
+    <packageSources>
+        <add key="Baget" value="http://nuget.aepserver.it/v3/index.json" allowInsecureConnections="true" />
+    </packageSources>
+
+    <!-- Opzionale: limitare quali pacchetti vengono risolti da quale sorgente -->
+    <packageSourceMapping>
+        <packageSource key="Baget">
+            <package pattern="TinyAppEngine*" /><!-- Tutti i pacchetti che iniziano con TinyAppEngine -->
+        </packageSource>
+    </packageSourceMapping>
+
+    <!-- Altre impostazioni utili -->
+    <config>
+        <!-- esempio: personalizzare la cartella dei pacchetti (opzionale) -->
+        <!-- <add key="globalPackagesFolder" value="%USERPROFILE%\.nuget\packages" /> -->
+    </config>
+</configuration>
 ```
 
 ## 📜 License
