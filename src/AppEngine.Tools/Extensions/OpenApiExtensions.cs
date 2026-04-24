@@ -33,6 +33,9 @@ public static class OpenApiExtensions
         public OpenApiOptions AddAcceptLanguageHeader() => options.AddOperationTransformer<AcceptLanguageHeaderOperationTransformer>();
         public OpenApiOptions AddDefaultProblemDetailsResponse() => options.AddOperationTransformer<DefaultResponseOperationTransformer>();
         public OpenApiOptions AddOperationParameters() => options.AddOperationTransformer<OpenApiParametersOperationFilter>();
+        public OpenApiOptions WriteNumberAsString() => options.AddSchemaTransformer<WriteNumberAsStringSchemaTransformer>();
+        public OpenApiOptions DescribeAllParametersInCamelCase() => options.AddOperationTransformer<CamelCaseQueryParametersOperationTransformer>();
+        public OpenApiOptions AddTimeExamples() => options.AddSchemaTransformer<TimeExampleSchemaTransformer>();
     }
 
     extension(OpenApiOptions options)
