@@ -5,13 +5,16 @@ namespace AppEngine.Tools.OperationResults.AspNetCore.Http;
 
 public static class ServiceCollectionExtensions
 {
-    public static IServiceCollection AddOperationResult(this IServiceCollection services, Action<OperationResultOptions>? configuration = null)
+    extension(IServiceCollection services)
     {
-        var operationResultOptions = new OperationResultOptions();
-        configuration?.Invoke(operationResultOptions);
+        public IServiceCollection AddOperationResult(Action<OperationResultOptions>? configuration = null)
+        {
+            var operationResultOptions = new OperationResultOptions();
+            configuration?.Invoke(operationResultOptions);
 
-        services.TryAddSingleton(operationResultOptions);
+            services.TryAddSingleton(operationResultOptions);
 
-        return services;
+            return services;
+        }
     }
 }
