@@ -2,5 +2,8 @@
 
 public static class TimeSpanExtensions
 {
-    public static TimeOnly ToTimeOnly(this TimeSpan timeSpan) => TimeOnly.FromTimeSpan(timeSpan);
+    extension(TimeSpan timeSpan)
+    {
+        public TimeOnly ToTimeOnly() => TimeOnly.FromTimeSpan(timeSpan);
+    }
 }

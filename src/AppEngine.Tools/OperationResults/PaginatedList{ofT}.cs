@@ -23,7 +23,7 @@ public class PaginatedList<T>
     public PaginatedList(IEnumerable<T>? items, int totalCount, int pageIndex) : this(items, totalCount, pageIndex, items?.Count() ?? 0)
     { }
 
-    public PaginatedList(IEnumerable<T>? items, int totalCount, int pageIndex, int pageSize) : this(items, totalCount, pageIndex, pageSize, totalCount > pageIndex * pageSize + (items?.Count() ?? 0))
+    public PaginatedList(IEnumerable<T>? items, int totalCount, int pageIndex, int pageSize) : this(items, totalCount, pageIndex, pageSize, totalCount > (pageIndex * pageSize) + (items?.Count() ?? 0))
     { }
 
     public PaginatedList(IEnumerable<T>? items, int totalCount, int pageIndex, int pageSize, bool hasNextPage)

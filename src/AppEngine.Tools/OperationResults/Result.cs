@@ -5,28 +5,22 @@ namespace AppEngine.Tools.OperationResults;
 public class Result : IGenericResult
 {
     public bool Success { get; }
-
     public int FailureReason { get; }
-
     public Exception? Error { get; }
 
     [MemberNotNullWhen(true, nameof(ErrorMessage))]
     public bool HasError => Error is not null;
 
-    private readonly string? errorMessage;
-    public string? ErrorMessage => errorMessage ?? Error?.Message;
-
-    private readonly string? errorDetail;
-    public string? ErrorDetail => errorDetail ?? Error?.InnerException?.Message;
-
+    public string? ErrorMessage => field ?? Error?.Message;
+    public string? ErrorDetail => field ?? Error?.InnerException?.Message;
     public IEnumerable<ValidationError>? ValidationErrors { get; }
 
     internal Result(bool success = true, int failureReason = FailureReasons.None, string? message = null, string? detail = null, Exception? error = null, IEnumerable<ValidationError>? validationErrors = null)
     {
         Success = success;
         FailureReason = failureReason;
-        errorMessage = message;
-        errorDetail = detail;
+        ErrorMessage = message;
+        ErrorDetail = detail;
         Error = error;
         ValidationErrors = validationErrors;
     }

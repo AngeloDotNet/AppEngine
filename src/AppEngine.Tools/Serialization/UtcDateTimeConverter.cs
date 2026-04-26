@@ -14,6 +14,5 @@ public class UtcDateTimeConverter(string? serializationFormat) : JsonConverter<D
         => reader.GetDateTime().ToUniversalTime();
 
     public override void Write(Utf8JsonWriter writer, DateTime value, JsonSerializerOptions options)
-        => writer.WriteStringValue((value.Kind == DateTimeKind.Local ? value.ToUniversalTime() : value)
-            .ToString(serializationFormat));
+        => writer.WriteStringValue((value.Kind == DateTimeKind.Local ? value.ToUniversalTime() : value).ToString(serializationFormat));
 }

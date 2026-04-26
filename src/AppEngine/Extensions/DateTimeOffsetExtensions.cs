@@ -2,15 +2,18 @@
 
 public static class DateTimeOffsetExtensions
 {
-    public static DateOnly ToDateOnly(this DateTimeOffset dateTimeOffset, TimeZoneInfo? zone = null)
+    extension(DateTimeOffset dateTimeOffset)
     {
-        var inTargetZone = TimeZoneInfo.ConvertTime(dateTimeOffset, zone ?? TimeZoneInfo.Utc);
-        return DateOnly.FromDateTime(inTargetZone.Date);
-    }
+        public DateOnly ToDateOnly(TimeZoneInfo? zone = null)
+        {
+            var inTargetZone = TimeZoneInfo.ConvertTime(dateTimeOffset, zone ?? TimeZoneInfo.Utc);
+            return DateOnly.FromDateTime(inTargetZone.Date);
+        }
 
-    public static TimeOnly ToTimeOnly(this DateTimeOffset dateTimeOffset, TimeZoneInfo? zone = null)
-    {
-        var inTargetZone = TimeZoneInfo.ConvertTime(dateTimeOffset, zone ?? TimeZoneInfo.Utc);
-        return TimeOnly.FromDateTime(dateTimeOffset.DateTime);
+        public TimeOnly ToTimeOnly(TimeZoneInfo? zone = null)
+        {
+            var inTargetZone = TimeZoneInfo.ConvertTime(dateTimeOffset, zone ?? TimeZoneInfo.Utc);
+            return TimeOnly.FromDateTime(dateTimeOffset.DateTime);
+        }
     }
 }

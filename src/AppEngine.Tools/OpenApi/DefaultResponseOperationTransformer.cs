@@ -8,7 +8,6 @@ namespace AppEngine.Tools.OpenApi;
 public class DefaultResponseOperationTransformer : IOpenApiOperationTransformer
 {
     public string DefaultResponseCode { get; set; } = "default";
-
     public string DefaultDescription { get; set; } = "Error";
 
     public async Task TransformAsync(OpenApiOperation operation, OpenApiOperationTransformerContext context, CancellationToken cancellationToken)
