@@ -12,8 +12,7 @@ internal class OpenApiParametersOperationFilter(OpenApiOperationOptions options)
         {
             operation.Parameters ??= [];
 
-            foreach (var parameter in options.Parameters
-                .Where(parameter => !operation.Parameters.Any(existingParameter
+            foreach (var parameter in options.Parameters.Where(parameter => !operation.Parameters.Any(existingParameter
                 => existingParameter.Name == parameter.Name && existingParameter.In == parameter.In)))
             {
                 operation.Parameters.Add(parameter);
