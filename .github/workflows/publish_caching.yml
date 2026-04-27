@@ -1,4 +1,4 @@
-name: Publish AppEngine Tools on BaGet
+name: Publish AppEngine Caching on BaGet
  
 permissions:
   contents: write
@@ -7,14 +7,14 @@ permissions:
 on:
   push:
     branches: [ main ]
-    paths: [ 'src/AppEngine.Tools/**' ]
+    paths: [ 'src/AppEngine.Caching/**' ]
   workflow_dispatch:
       
 env:
   NET_VERSION: '10.x'
-  PROJECT_NAME: src/AppEngine.Tools
-  PROJECT_FILE: AppEngine.Tools.csproj
-  RELEASE_NAME: AppEngine.Tools
+  PROJECT_NAME: src/AppEngine.Caching
+  PROJECT_FILE: AppEngine.Caching.csproj
+  RELEASE_NAME: AppEngine.Caching
 
 jobs:
   build:
