@@ -1,5 +1,12 @@
 ﻿namespace AppEngine.Caching.Settings;
 
+/// <summary>
+/// Represents the configuration settings for a cache entry in FusionCache, including expiration, fail-safe behavior,
+/// and factory operation timeouts.
+/// </summary>
+/// <remarks>Use this class to customize how individual cache entries behave with respect to duration, fail-safe
+/// mechanisms, eager refresh thresholds, and factory operation timeouts. Adjusting these settings allows fine-tuning of
+/// cache resilience, refresh strategies, and performance characteristics for different caching scenarios.</remarks>
 public class FusionCacheEntrySettings
 {
     /// <summary>
