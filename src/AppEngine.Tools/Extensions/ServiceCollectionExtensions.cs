@@ -1,5 +1,8 @@
 ﻿using System.Text.Json.Serialization;
+using AppEngine.Tools.FluentValidation;
 using AppEngine.Tools.Serialization;
+using Microsoft.AspNetCore.Builder;
+using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -34,6 +37,16 @@ public static class ServiceCollectionExtensions
             section.Bind(settings);
 
             return settings;
+        }
+    }
+
+    extension(RouteHandlerBuilder builder)
+    {
+        public RouteHandlerBuilder WithValidation<TModel>() where TModel : class
+        {
+            builder.AddEndpointFilter<ValidatorFilter<TModel>>().ProducesValidationProblem();
+
+            return builder;
         }
     }
 }

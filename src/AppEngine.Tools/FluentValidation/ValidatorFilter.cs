@@ -1,10 +1,11 @@
 ﻿using System.Diagnostics;
-using AppEngine.Validation;
+using AppEngine.Tools.OperationResults.AspNetCore.Http;
+using AppEngine.Tools.Validation;
 using FluentValidation;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 
-namespace AppEngine.FluentValidation;
+namespace AppEngine.Tools.FluentValidation;
 
 internal class ValidatorFilter<TModel>(IValidator<TModel> validator, IOptions<ValidationOptions> options) : IEndpointFilter where TModel : class
 {
