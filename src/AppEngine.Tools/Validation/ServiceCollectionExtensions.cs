@@ -1,6 +1,6 @@
 ﻿using Microsoft.Extensions.DependencyInjection;
 
-namespace AppEngine.Validation;
+namespace AppEngine.Tools.Validation;
 
 public static class ServiceCollectionExtensions
 {

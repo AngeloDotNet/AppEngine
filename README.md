@@ -29,8 +29,7 @@ AppEngine/
 │   │   ├──  Logging/                           # Logging utilities and configurations
 │   │   ├──  Middleware/                        # Custom middleware components
 │   │   ├──  Routing/                           # Routing configurations and related classes
-│   │   ├──  Settings/                          # Configuration classes and settings management
-│   │   └──  Validation/                        # Validation logic and classes
+│   │   └──  Settings/                          # Configuration classes and settings management
 │   │
 │   ├── AppEngine.Caching/                      # Caching utilities and implementations
 │   │   ├──  DependencyInjection/               # Dependency injection configurations for caching
@@ -56,16 +55,18 @@ AppEngine/
 │   │   │    ├── Abstractions/                  # Abstractions and interfaces for authentication
 │   │   │    └── JWTBearer/                     # JWT Bearer authentication related classes and utilities
 │   │   │
-│   │   └──  TimeZoneService/                   # Time zone related utilities and services
-│   │        └── Interfaces/                    # Interfaces for time zone services
+│   │   ├──  TimeZoneService/                   # Time zone related utilities and services
+│   │   │    └── Interfaces/                    # Interfaces for time zone services
+│   │   │
+│   │   └──  Validation/                        # Validation logic and classes
 │   │   
 │   └── Directory.Build.props                   # Shared MSBuild properties
 │
-├── .editorconfig                       # Code style and formatting rules
-├── .gitignore                          # Git ignore file
-├── LICENSE                             # License information
-├── README.md                           # Project documentation
-└── AppEngine.slnx                      # Solution file for the entire project
+├── .editorconfig                               # Code style and formatting rules
+├── .gitignore                                  # Git ignore file
+├── LICENSE                                     # License information
+├── README.md                                   # Project documentation
+└── AppEngine.slnx                              # Solution file for the entire project
 ```
 
 ## 🛠️ Installation
@@ -76,7 +77,7 @@ AppEngine/
 
 ### Setup
 
-The libraries are available on [Baget](http://nuget.aepserver.it), just search for _TinyAppEngine_ or _TinyAppEngine.Tools_ in the Package Manager GUI or run the following command in the .NET CLI:
+The libraries are available on [Baget](http://nuget.aepserver.it), just search for _TinyAppEngine_ or _TinyAppEngine.Tools_ or _TinyAppEngine.Caching_ in the Package Manager GUI or run the following command in the .NET CLI:
 
 ```shell
 dotnet add package TinyAppEngine
