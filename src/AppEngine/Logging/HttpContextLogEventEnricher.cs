@@ -10,6 +10,9 @@ public class HttpContextEnricher(IHttpContextAccessor httpContextAccessor) : ILo
     {
         var httpContext = httpContextAccessor.HttpContext;
 
+        logEvent.AddPropertyIfAbsent(propertyFactory.CreateProperty("LevelNumber", (int)logEvent.Level));
+        logEvent.AddPropertyIfAbsent(propertyFactory.CreateProperty("IsHttp", httpContext is not null));
+
         if (httpContext is null)
         {
             return;
