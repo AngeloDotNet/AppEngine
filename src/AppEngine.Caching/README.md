@@ -1,9 +1,5 @@
 ﻿# AppEngine
 
-<!--
-A lightweight development engine for .NET web applications, designed to simplify and provide essential tools for developing web apps.
--->
-
 ## 🏷️ Introduction
 
 AppEngine is a lightweight development engine for .NET web applications, designed to simplify and provide essential tools for developing web apps. It offers a collection of utilities, extensions, and validation mechanisms to streamline the development process and enhance productivity.
@@ -17,17 +13,12 @@ AppEngine/
 │   └── workflows/                              # GitHub Actions workflows for CI/CD
 │
 ├── src/
-│   ├── AppEngine/                              # Core functionalities and utilities
-│   │   ├──  DependencyInjection/               # Dependency injection configurations and related classes
-│   │   ├──  Enums/                             # Enumeration types used across the project
-│   │   ├──  Extensions/                        # Extension methods for various classes and types
-│   │   ├──  Logging/                           # Logging utilities and configurations
-│   │   ├──  Middleware/                        # Custom middleware components
-│   │   ├──  Routing/                           # Routing configurations and related classes
-│   │   ├──  Settings/                          # Configuration classes and settings management
-│   │   └──  Versioning/                        # API versioning configurations and related classes
-│   │        ├── Options/                       # API versioning options and configuration classes
-│   │        └── Transformers/                  # API versioning transformers and related classes    
+│   ├── AppEngine.Caching/                      # Caching utilities and implementations
+│   │   ├──  DependencyInjection/               # Dependency injection configurations for caching
+│   │   │    └── ServiceCollectionExtensions/   # Extension methods for IServiceCollection related to caching
+│   │   │
+│   │   ├──  Options/                           # Caching options and configuration classes
+│   │   └──  Settings/                          # Caching settings and related classes
 │   │   
 │   └── Directory.Build.props                   # Shared MSBuild properties
 │
@@ -46,10 +37,10 @@ AppEngine/
 
 ### Setup
 
-The libraries are available on [Baget](http://nuget.aepserver.it), just search for _TinyAppEngine_ in the Package Manager GUI or run the following command in the .NET CLI:
+The libraries are available on [Baget](http://nuget.aepserver.it), just search for _TinyAppEngine.Caching_ in the Package Manager GUI or run the following command in the .NET CLI:
 
 ```shell
-dotnet add package TinyAppEngine
+dotnet add package TinyAppEngine.Caching
 ```
 
 > [!NOTE]

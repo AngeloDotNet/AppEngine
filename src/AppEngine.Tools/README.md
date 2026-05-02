@@ -1,9 +1,5 @@
 ﻿# AppEngine
 
-<!--
-A lightweight development engine for .NET web applications, designed to simplify and provide essential tools for developing web apps.
--->
-
 ## 🏷️ Introduction
 
 AppEngine is a lightweight development engine for .NET web applications, designed to simplify and provide essential tools for developing web apps. It offers a collection of utilities, extensions, and validation mechanisms to streamline the development process and enhance productivity.
@@ -17,17 +13,28 @@ AppEngine/
 │   └── workflows/                              # GitHub Actions workflows for CI/CD
 │
 ├── src/
-│   ├── AppEngine/                              # Core functionalities and utilities
-│   │   ├──  DependencyInjection/               # Dependency injection configurations and related classes
-│   │   ├──  Enums/                             # Enumeration types used across the project
-│   │   ├──  Extensions/                        # Extension methods for various classes and types
-│   │   ├──  Logging/                           # Logging utilities and configurations
-│   │   ├──  Middleware/                        # Custom middleware components
-│   │   ├──  Routing/                           # Routing configurations and related classes
-│   │   ├──  Settings/                          # Configuration classes and settings management
-│   │   └──  Versioning/                        # API versioning configurations and related classes
-│   │        ├── Options/                       # API versioning options and configuration classes
-│   │        └── Transformers/                  # API versioning transformers and related classes    
+│   ├── AppEngine.Tools/                        # Command-line tools and utilities
+│   │   ├──  ExceptionHandlers/                 # Custom exception handlers and related classes
+│   │   ├──  Extensions/                        # Extension methods specific to the tools
+│   │   ├──  FluentValidation/                  # Fluent validation rules and validators
+│   │   ├──  OpenApi/                           # OpenAPI related utilities and classes
+│   │   │    ├── Filters/                       # OpenAPI filters and related classes
+│   │   │    ├── Helpers/                       # OpenAPI helper classes and utilities
+│   │   │    ├── Options/                       # OpenAPI options and configuration classes
+│   │   │    └── SimpleAuthentication/          # OpenAPI extensions and utilities for simple authentication
+│   │   │
+│   │   ├──  OperationResult/                   # Classes related to operation results and responses
+│   │   │    └── AspNetCore.Http/               # Operation result classes specific to ASP.NET Core HTTP responses
+│   │   │
+│   │   ├──  Serialization/                     # Serialization utilities and classes
+│   │   ├──  SimpleAuthentication/              # Simple authentication utilities and classes
+│   │   │    ├── Abstractions/                  # Abstractions and interfaces for authentication
+│   │   │    └── JWTBearer/                     # JWT Bearer authentication related classes and utilities
+│   │   │
+│   │   ├──  TimeZoneService/                   # Time zone related utilities and services
+│   │   │    └── Interfaces/                    # Interfaces for time zone services
+│   │   │
+│   │   └──  Validation/                        # Validation logic and classes
 │   │   
 │   └── Directory.Build.props                   # Shared MSBuild properties
 │
@@ -46,10 +53,10 @@ AppEngine/
 
 ### Setup
 
-The libraries are available on [Baget](http://nuget.aepserver.it), just search for _TinyAppEngine_ in the Package Manager GUI or run the following command in the .NET CLI:
+The libraries are available on [Baget](http://nuget.aepserver.it), just search for _TinyAppEngine.Tools_ in the Package Manager GUI or run the following command in the .NET CLI:
 
 ```shell
-dotnet add package TinyAppEngine
+dotnet add package TinyAppEngine.Tools
 ```
 
 > [!NOTE]

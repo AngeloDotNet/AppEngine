@@ -36,7 +36,7 @@ public static class OperationResultExtensions
     extension<T>(Result<T> result)
     {
         public IResult ToResponse(HttpContext httpContext, int? successStatusCode = null)
-        => result.ToResponse(httpContext, null, null, successStatusCode);
+            => result.ToResponse(httpContext, null, null, successStatusCode);
 
         public IResult ToResponse(HttpContext httpContext, string? routeName, object? routeValues = null, int? successStatusCode = null)
         {
