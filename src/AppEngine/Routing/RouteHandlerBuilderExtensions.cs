@@ -1,5 +1,4 @@
-﻿using AppEngine.FluentValidation;
-using Microsoft.AspNetCore.Builder;
+﻿using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
 using Microsoft.OpenApi;
 
@@ -19,12 +18,12 @@ public static class RouteHandlerBuilderExtensions
 
     extension(RouteHandlerBuilder builder)
     {
-        public RouteHandlerBuilder WithValidation<TModel>() where TModel : class
-        {
-            builder.AddEndpointFilter<ValidatorFilter<TModel>>().ProducesValidationProblem();
+        //public RouteHandlerBuilder WithValidation<TModel>() where TModel : class
+        //{
+        //    builder.AddEndpointFilter<ValidatorFilter<TModel>>().ProducesValidationProblem();
 
-            return builder;
-        }
+        //    return builder;
+        //}
 
         public RouteHandlerBuilder WithResponseDescription(int statusCode, string description)
         {
