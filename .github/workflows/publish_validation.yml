@@ -1,8 +1,7 @@
 name: Publish AppEngine Validations on BaGet
  
 permissions:
-  contents: write
-  packages: write
+  contents: read
   
 on:
   push:
