@@ -1,7 +1,7 @@
-﻿using System.Diagnostics;
-using Microsoft.AspNetCore.Diagnostics;
+﻿using Microsoft.AspNetCore.Diagnostics;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Hosting;
 
@@ -21,10 +21,15 @@ internal class DefaultExceptionHandler(IProblemDetailsService problemDetailsServ
             Status = httpContext.Response.StatusCode,
             Title = exception.GetType().FullName,
             Detail = exception.Message,
-            Instance = httpContext.Request.Path
+            //Instance = httpContext.Request.Path
+            Instance = $"{httpContext.Request.Method} {httpContext.Request.Path}"
         };
 
-        problemDetails.Extensions["traceId"] = Activity.Current?.Id ?? httpContext.TraceIdentifier;
+        //problemDetails.Extensions["traceId"] = Activity.Current?.Id ?? httpContext.TraceIdentifier;
+        var activity = httpContext.Features.Get<IHttpActivityFeature>()?.Activity;
+        problemDetails.Extensions.TryAdd("traceId", activity?.Id);
+
+        problemDetails.Extensions.TryAdd("requestId", httpContext.TraceIdentifier);
 
         if (exception.InnerException is not null)
         {
