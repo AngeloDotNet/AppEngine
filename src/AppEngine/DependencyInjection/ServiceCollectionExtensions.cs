@@ -28,8 +28,9 @@ public static class ServiceCollectionExtensions
         /// <param name="apiPolicyOptions">Optional. A list of policy options to configure versioning policies, such as sunset dates and deprecation
         /// information, for specific API versions.</param>
         /// <returns>The same IServiceCollection instance so that additional calls can be chained.</returns>
-        public IServiceCollection AddVersioningApi(string[] apiVersions, ApiVersioningOptions? apiVersioningOptions = null,
-            List<ApiPoliciesOptions>? apiPolicyOptions = null)
+        //[Obsolete("This method is obsolete. Use the new AddVersioningApi method with updated parameters.")]
+        [Obsolete("This method is obsolete. Use the new AddVersioningApi method with two parameters.")]
+        public IServiceCollection AddVersioningApi(string[] apiVersions, ApiVersioningOptions apiVersioningOptions, List<ApiPoliciesOptions> apiPolicyOptions)
         {
             var apiVersionOptions = new ApiVersioningOptions();
 
@@ -64,6 +65,57 @@ public static class ServiceCollectionExtensions
             //    .Link("https://github.com/dotnet/aspnet-api-versioning/wiki/Version-Policies")
             //    .Title("Version Policies").Type("text/html");
             //})
+            services.AddApiVersioning(options => options = apiVersionOptions)
+                .AddApiExplorer(options =>
+                {
+                    options.GroupNameFormat = "'v'VVV";
+                    options.SubstituteApiVersionInUrl = true;
+                });
+
+            //var versions = new string[] { "v1", "v2" };
+            var versions = apiVersions;
+
+            foreach (var description in versions)
+            {
+                services.AddOpenApi(description, options =>
+                {
+                    options.AddDocumentTransformer<DocumentInfoDocumentTransformer>();
+                    options.AddOperationTransformer<ApiVersionDeprecatedTransformer>();
+                });
+            }
+
+            return services;
+        }
+
+        /// <summary>
+        /// Configures API versioning and related policies for the service collection, and registers OpenAPI
+        /// documentation for each specified API version.
+        /// </summary>
+        /// <remarks>This method sets up API versioning using the provided version identifiers and applies
+        /// any specified deprecation or sunset policies. It also configures the API explorer and registers OpenAPI
+        /// documentation for each version. Call this method during service configuration to enable versioned API
+        /// documentation and policy enforcement.</remarks>
+        /// <param name="apiVersions">An array of strings representing the API versions to be registered. Each string should specify a version
+        /// identifier, such as "v1" or "v2".</param>
+        /// <param name="apiPolicyOptions">A list of policy options that define deprecation and sunset policies for specific API versions. Can be null
+        /// if no policies are required.</param>
+        /// <returns>The same IServiceCollection instance with API versioning and OpenAPI documentation configured.</returns>
+        public IServiceCollection AddVersioningApi(string[] apiVersions, List<ApiPoliciesOptions> apiPolicyOptions)
+        {
+            var apiVersionOptions = new ApiVersioningOptions();
+            apiVersionOptions = ApiVersionOptions.SetApiVersioningOptions();
+
+            if (apiPolicyOptions != null)
+            {
+                foreach (var policy in apiPolicyOptions)
+                {
+                    apiVersionOptions.Policies.Sunset(policy.MajorVersion)
+                        .Effective(policy.EffectiveDate)
+                        .Link(policy.Link)
+                        .Title(policy.Title).Type(policy.Type);
+                }
+            }
+
             services.AddApiVersioning(options => options = apiVersionOptions)
                 .AddApiExplorer(options =>
                 {

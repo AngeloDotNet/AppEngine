@@ -14,6 +14,35 @@ namespace AppEngine.Caching.DependencyInjection;
 
 public static class ServiceCollectionExtensions
 {
+    /// <summary>
+    /// Creates a new instance of RedisCacheOptions configured with the specified instance name and connection string.
+    /// </summary>
+    /// <param name="instanceName">The name to associate with the Redis cache instance. This value is used to distinguish cache data for different
+    /// application instances.</param>
+    /// <param name="redisConnectionString">The connection string used to connect to the Redis server. Must be a valid Redis connection string.</param>
+    /// <returns>A RedisCacheOptions object initialized with the provided instance name and connection string.</returns>
+    public static RedisCacheOptions GetRedisConnectionOptions(string instanceName, string redisConnectionString)
+    {
+        return new RedisCacheOptions
+        {
+            InstanceName = instanceName,
+            Configuration = redisConnectionString
+        };
+    }
+
+    /// <summary>
+    /// Creates a new instance of RedisBackplaneOptions configured with the specified Redis connection string.
+    /// </summary>
+    /// <param name="redisBackplaneConnectionString">The connection string used to configure the Redis backplane. Cannot be null or empty.</param>
+    /// <returns>A RedisBackplaneOptions instance initialized with the provided connection string.</returns>
+    public static RedisBackplaneOptions GetRedisBackplaneConnectionOptions(string redisBackplaneConnectionString)
+    {
+        return new RedisBackplaneOptions
+        {
+            Configuration = redisBackplaneConnectionString
+        };
+    }
+
     extension(IServiceCollection services)
     {
         /// <summary>
@@ -56,16 +85,17 @@ public static class ServiceCollectionExtensions
         }
 
         /// <summary>
-        /// Adds and configures FusionCache with distributed Redis support to the specified service collection.
+        /// Adds and configures a distributed FusionCache instance with custom entry and distributed cache settings to
+        /// the service collection.
         /// </summary>
-        /// <remarks>This method registers FusionCache with both in-memory and distributed Redis caching
-        /// capabilities. It allows customization of cache entry options and distributed cache settings using the provided
-        /// configuration actions. Call this method during application startup to enable FusionCache with distributed
-        /// support in your dependency injection container.</remarks>
-        /// <param name="services">The service collection to which FusionCache and its dependencies are added. Cannot be null.</param>
-        /// <param name="action">An action to configure the FusionCache entry settings. Cannot be null.</param>
-        /// <param name="distributedAction">An action to configure the distributed cache settings, such as the Redis connection string. Cannot be null.</param>
-        /// <returns>The same instance of <see cref="IServiceCollection"/> that was provided, to support method chaining.</returns>
+        /// <remarks>This method registers both in-memory and distributed (Redis-based) FusionCache
+        /// services using the provided configuration delegates. It enables advanced caching scenarios by allowing
+        /// customization of both local and distributed cache behaviors.</remarks>
+        /// <param name="action">A delegate that configures the FusionCache entry settings. Used to specify cache entry options such as
+        /// duration, fail-safe behavior, and refresh thresholds.</param>
+        /// <param name="distributedAction">A delegate that configures the distributed cache settings for FusionCache, including Redis connection
+        /// details and instance name.</param>
+        /// <returns>The same IServiceCollection instance, enabling further configuration chaining.</returns>
         public IServiceCollection AddDistributedFusionCache(Action<FusionCacheEntrySettings> action, Action<FusionCacheDistributedSettings> distributedAction)
         {
             ArgumentNullException.ThrowIfNull(services);
@@ -77,6 +107,8 @@ public static class ServiceCollectionExtensions
 
             var distributedSettings = new FusionCacheDistributedSettings();
             distributedAction.Invoke(distributedSettings);
+
+            var redisOptions = GetRedisConnectionOptions(distributedSettings.InstanceName, distributedSettings.RedisConnectionString);
 
             services.AddMemoryCache();
             services.AddFusionCache()
@@ -99,21 +131,20 @@ public static class ServiceCollectionExtensions
                 // ADD SERIALIZATION BASED ON System.Text.Json
                 .WithSerializer(new FusionCacheSystemTextJsonSerializer())
                 // ADD DISTRIBUTED CACHE BASED ON REDIS
-                .WithDistributedCache(new RedisCache(new RedisCacheOptions() { Configuration = distributedSettings.RedisConnectionString }));
+                .WithDistributedCache(new RedisCache(redisOptions));
 
             return services;
         }
 
         /// <summary>
-        /// Adds and configures FusionCache with distributed cache support to the service collection using the specified
-        /// entry and distributed settings.
+        /// Adds and configures FusionCache with distributed cache support using the specified entry and distributed
+        /// settings.
         /// </summary>
-        /// <remarks>This method registers FusionCache with both in-memory and distributed cache capabilities,
-        /// using System.Text.Json for serialization and Redis as the distributed cache provider. It applies the provided
-        /// entry and distributed settings to configure cache behavior.</remarks>
-        /// <param name="services">The service collection to which FusionCache and its distributed cache support will be added. Cannot be null.</param>
-        /// <param name="action">An action to configure the FusionCache entry settings. Cannot be null.</param>
-        /// <param name="distributedAction">An action to configure the distributed cache settings, such as the Redis connection string. Cannot be null.</param>
+        /// <remarks>This method registers FusionCache with both in-memory and Redis-based distributed
+        /// caching, applying the provided configuration actions. It also sets up serialization using System.Text.Json.
+        /// Call this method during application startup to enable distributed caching with custom settings.</remarks>
+        /// <param name="action">An action to configure the FusionCache entry settings, such as cache duration and fail-safe options.</param>
+        /// <param name="distributedAction">An action to configure distributed cache settings, including instance name and Redis connection details.</param>
         /// <param name="options">The options instance containing distributed cache configuration values. Cannot be null.</param>
         /// <returns>The same IServiceCollection instance so that additional calls can be chained.</returns>
         public IServiceCollection AddDistributedOptionsFusionCache(Action<FusionCacheEntrySettings> action,
@@ -132,6 +163,7 @@ public static class ServiceCollectionExtensions
             distributedAction.Invoke(distributedSettings);
 
             var cacheOptions = options.Value;
+            var redisOptions = GetRedisConnectionOptions(distributedSettings.InstanceName, distributedSettings.RedisConnectionString);
 
             services.AddMemoryCache();
             services.AddFusionCache()
@@ -159,23 +191,21 @@ public static class ServiceCollectionExtensions
                 // ADD SERIALIZATION BASED ON System.Text.Json
                 .WithSerializer(new FusionCacheSystemTextJsonSerializer())
                 // ADD DISTRIBUTED CACHE BASED ON REDIS
-                .WithDistributedCache(new RedisCache(new RedisCacheOptions() { Configuration = distributedSettings.RedisConnectionString }));
+                .WithDistributedCache(new RedisCache(redisOptions));
 
             return services;
         }
 
         /// <summary>
-        /// Adds a distributed FusionCache implementation with configurable jitter, distributed settings, and optional
-        /// backplane support to the service collection.
+        /// Adds and configures a distributed FusionCache instance with jitter and backplane support to the service
+        /// collection.
         /// </summary>
-        /// <remarks>This method configures FusionCache with support for distributed caching, optional backplane
-        /// integration, and distributed stampede protection based on the provided options. It should be called during
-        /// application startup to register the necessary services for distributed caching scenarios.</remarks>
-        /// <param name="services">The service collection to which the FusionCache services will be added. Cannot be null.</param>
-        /// <param name="action">An action to configure the FusionCache entry settings. Cannot be null.</param>
-        /// <param name="distributedAction">An action to configure the distributed cache settings. Cannot be null.</param>
-        /// <param name="options">The options used to configure distributed FusionCache features, including backplane and logging settings. Cannot
-        /// be null.</param>
+        /// <remarks>This method enables advanced distributed caching scenarios, including support for
+        /// Redis backplane and distributed stampede protection, based on the provided configuration. It should be
+        /// called during application startup as part of service registration.</remarks>
+        /// <param name="action">An action to configure the FusionCache entry settings, such as expiration and jitter parameters.</param>
+        /// <param name="distributedAction">An action to configure distributed cache settings, including instance name and connection details.</param>
+        /// <param name="options">The options used to configure distributed FusionCache behavior. Cannot be null.</param>
         /// <returns>The same IServiceCollection instance so that additional calls can be chained.</returns>
         public IServiceCollection AddDistributedJitterFusionCache(Action<FusionCacheEntrySettings> action,
             Action<FusionCacheDistributedSettings> distributedAction, IOptions<FusionCacheDistributedOptions> options)
@@ -195,33 +225,34 @@ public static class ServiceCollectionExtensions
             var cacheOptions = options.Value;
             var fusionCacheEnabledOptions = cacheOptions.FusionCacheEnabledOptions;
 
-            var enableBackplane = fusionCacheEnabledOptions?.EnableBackplane ?? false;
-            var enableDistributedStampedeProtection = fusionCacheEnabledOptions?.EnableDistributedStampedeProtection ?? false;
-            var enableLogging = fusionCacheEnabledOptions?.EnableLogging ?? false;
+            var redisOptions = GetRedisConnectionOptions(distributedSettings.InstanceName, distributedSettings.RedisConnectionString);
+            var redisBackplaneOptions = GetRedisBackplaneConnectionOptions(distributedSettings.RedisConnectionString);
+
+            var muxerRedisConnectionString = distributedSettings.MuxerRedisConnectionString;
 
             services.AddMemoryCache();
 
-            if (enableBackplane)
+            if (fusionCacheEnabledOptions?.EnableBackplane ?? false)
             {
-                if (enableDistributedStampedeProtection)
+                if (fusionCacheEnabledOptions?.EnableDistributedStampedeProtection ?? false)
                 {
-                    if (enableLogging)
+                    if (fusionCacheEnabledOptions?.EnableLogging ?? false)
                     {
-                        Task.FromResult(services.AddFusionCacheDistributedStampedeLoggingAsync(configuration, distributedSettings, cacheOptions));
+                        Task.FromResult(services.AddFusionCacheDistributedStampedeLoggingAsync(configuration, cacheOptions, muxerRedisConnectionString));
                     }
                     else
                     {
-                        Task.FromResult(services.AddFusionCacheDistributedStampedeProtectionAsync(configuration, distributedSettings, cacheOptions));
+                        Task.FromResult(services.AddFusionCacheDistributedStampedeProtectionAsync(configuration, cacheOptions, muxerRedisConnectionString));
                     }
                 }
                 else
                 {
-                    services.AddFusionCacheWithBackplane(configuration, distributedSettings, cacheOptions);
+                    services.AddFusionCacheWithBackplane(configuration, cacheOptions, redisOptions, redisBackplaneOptions);
                 }
             }
             else
             {
-                services.AddFusionCacheWithoutBackplane(configuration, distributedSettings, cacheOptions);
+                services.AddFusionCacheWithoutBackplane(configuration, cacheOptions, redisOptions);
             }
 
             return services;
@@ -229,8 +260,21 @@ public static class ServiceCollectionExtensions
 
         #region "Internal Methods"
 
-        internal IServiceCollection AddFusionCacheWithoutBackplane(FusionCacheEntrySettings configuration,
-            FusionCacheDistributedSettings distributedSettings, FusionCacheDistributedOptions cacheOptions)
+        /// <summary>
+        /// Configures FusionCache with the specified entry settings and distributed cache options, using Redis as the
+        /// distributed cache, without enabling a backplane.
+        /// </summary>
+        /// <remarks>This method sets up FusionCache with System.Text.Json serialization and Redis as the
+        /// distributed cache, but does not configure a backplane for cross-instance cache synchronization. Use this
+        /// method when distributed cache coordination is not required.</remarks>
+        /// <param name="configuration">The cache entry settings to apply as defaults for FusionCache entries. Specifies durations, fail-safe
+        /// behavior, eager refresh, and factory timeouts.</param>
+        /// <param name="cacheOptions">The distributed cache options to use, including timeouts, background operation settings, and jitter
+        /// configuration.</param>
+        /// <param name="redisOptions">The Redis cache options used to configure the underlying distributed cache implementation.</param>
+        /// <returns>The current IServiceCollection instance with FusionCache and Redis distributed cache services configured.</returns>
+        internal IServiceCollection AddFusionCacheWithoutBackplane(FusionCacheEntrySettings configuration, FusionCacheDistributedOptions cacheOptions,
+            RedisCacheOptions redisOptions)
         {
             services.AddFusionCache()
                 .WithOptions(options =>
@@ -264,13 +308,29 @@ public static class ServiceCollectionExtensions
                 // ADD SERIALIZATION BASED ON System.Text.Json
                 .WithSerializer(new FusionCacheSystemTextJsonSerializer())
                 // ADD DISTRIBUTED CACHE BASED ON REDIS
-                .WithDistributedCache(new RedisCache(new RedisCacheOptions() { Configuration = distributedSettings.RedisConnectionString }));
+                .WithDistributedCache(new RedisCache(redisOptions));
 
             return services;
         }
 
-        internal IServiceCollection AddFusionCacheWithBackplane(FusionCacheEntrySettings configuration,
-            FusionCacheDistributedSettings distributedSettings, FusionCacheDistributedOptions cacheOptions)
+        /// <summary>
+        /// Configures FusionCache with distributed Redis caching and Redis backplane support using the specified
+        /// settings.
+        /// </summary>
+        /// <remarks>This method enables distributed caching and cross-instance cache synchronization for
+        /// FusionCache using Redis. It applies the provided configuration and options to ensure consistent cache
+        /// behavior and failover support. Use this method when you require both distributed cache and backplane
+        /// features in a multi-instance environment.</remarks>
+        /// <param name="configuration">The cache entry settings to apply as the default configuration for FusionCache entries. Specifies durations,
+        /// fail-safe, eager refresh, and timeout options.</param>
+        /// <param name="cacheOptions">The distributed cache options, including timeouts, circuit breaker, background operation settings, and
+        /// jitter configuration for FusionCache.</param>
+        /// <param name="redisOptions">The Redis cache options used to configure the distributed cache provider.</param>
+        /// <param name="redisBackplaneOptions">The Redis backplane options used to configure the backplane for cache synchronization across instances.</param>
+        /// <returns>The same IServiceCollection instance with FusionCache, distributed Redis cache, and Redis backplane services
+        /// configured.</returns>
+        internal IServiceCollection AddFusionCacheWithBackplane(FusionCacheEntrySettings configuration, FusionCacheDistributedOptions cacheOptions,
+            RedisCacheOptions redisOptions, RedisBackplaneOptions redisBackplaneOptions)
         {
             services.AddFusionCache()
                 .WithOptions(options =>
@@ -304,18 +364,34 @@ public static class ServiceCollectionExtensions
                 // ADD SERIALIZATION BASED ON System.Text.Json
                 .WithSerializer(new FusionCacheSystemTextJsonSerializer())
                 // ADD DISTRIBUTED CACHE BASED ON REDIS
-                .WithDistributedCache(new RedisCache(new RedisCacheOptions() { Configuration = distributedSettings.RedisConnectionString }))
+                .WithDistributedCache(new RedisCache(redisOptions))
                 // ADD BACKPLANE BASED ON REDIS
-                .WithBackplane(new RedisBackplane(new RedisBackplaneOptions() { Configuration = distributedSettings.RedisConnectionString }));
+                .WithBackplane(new RedisBackplane(redisBackplaneOptions));
 
             return services;
         }
 
-        internal async Task<IServiceCollection> AddFusionCacheDistributedStampedeProtectionAsync(FusionCacheEntrySettings configuration, FusionCacheDistributedSettings distributedSettings, FusionCacheDistributedOptions cacheOptions)
+        /// <summary>
+        /// Configures FusionCache with distributed stampede protection using Redis for distributed cache, backplane,
+        /// and distributed locking, and applies the specified cache entry and distributed options asynchronously.
+        /// </summary>
+        /// <remarks>A single Redis connection multiplexer instance is created and shared across all
+        /// FusionCache distributed components for optimal performance and resource management. This method should be
+        /// called during service registration to ensure correct setup of distributed features.</remarks>
+        /// <param name="configuration">The cache entry settings to apply as the default options for FusionCache entries. Specifies durations,
+        /// fail-safe, eager refresh, and timeout behaviors.</param>
+        /// <param name="cacheOptions">The distributed cache options to configure circuit breaker, timeouts, background operations, and jittering
+        /// for FusionCache's distributed layer.</param>
+        /// <param name="muxerRedisConnectionString">The connection string used to establish a shared Redis connection multiplexer for distributed cache,
+        /// backplane, and distributed locking.</param>
+        /// <returns>A task that represents the asynchronous operation. The task result contains the service collection with
+        /// FusionCache configured for distributed stampede protection.</returns>
+        internal async Task<IServiceCollection> AddFusionCacheDistributedStampedeProtectionAsync(FusionCacheEntrySettings configuration,
+            FusionCacheDistributedOptions cacheOptions, string muxerRedisConnectionString)
         {
             // Create a single instance of ConnectionMultiplexer to be shared across the application
             // This is important for performance and resource management when using StackExchange.Redis (Optimize Redis Usage)
-            IConnectionMultiplexer muxer = await ConnectionMultiplexer.ConnectAsync(distributedSettings.RedisConnectionString);
+            IConnectionMultiplexer muxer = await ConnectionMultiplexer.ConnectAsync(muxerRedisConnectionString);
 
             services.AddFusionCache()
                 .WithOptions(options =>
@@ -367,11 +443,28 @@ public static class ServiceCollectionExtensions
             return services;
         }
 
-        internal async Task<IServiceCollection> AddFusionCacheDistributedStampedeLoggingAsync(FusionCacheEntrySettings configuration, FusionCacheDistributedSettings distributedSettings, FusionCacheDistributedOptions cacheOptions)
+        /// <summary>
+        /// Configures FusionCache with distributed stampede logging, Redis-based distributed cache, backplane, and
+        /// distributed locker, using the specified settings and connection string.
+        /// </summary>
+        /// <remarks>A single Redis connection multiplexer instance is created and shared across
+        /// distributed cache, backplane, and distributed locker components for optimal resource usage. Logging levels
+        /// and circuit breaker durations are set based on the provided options. This method is intended for internal
+        /// use and should be called during service registration.</remarks>
+        /// <param name="configuration">The cache entry settings to apply as the default options for FusionCache entries. Specifies durations,
+        /// fail-safe behavior, eager refresh, and factory timeouts.</param>
+        /// <param name="cacheOptions">The distributed cache options, including timeouts, background operation settings, jitter configuration, and
+        /// logging levels.</param>
+        /// <param name="muxerRedisConnectionString">The connection string used to establish a shared Redis connection multiplexer for distributed cache,
+        /// backplane, and distributed locker integration.</param>
+        /// <returns>A task that represents the asynchronous operation. The task result contains the service collection with
+        /// FusionCache and related distributed features configured.</returns>
+        internal async Task<IServiceCollection> AddFusionCacheDistributedStampedeLoggingAsync(FusionCacheEntrySettings configuration,
+            FusionCacheDistributedOptions cacheOptions, string muxerRedisConnectionString)
         {
             // Create a single instance of ConnectionMultiplexer to be shared across the application
             // This is important for performance and resource management when using StackExchange.Redis (Optimize Redis Usage)
-            IConnectionMultiplexer muxer = await ConnectionMultiplexer.ConnectAsync(distributedSettings.RedisConnectionString);
+            IConnectionMultiplexer muxer = await ConnectionMultiplexer.ConnectAsync(muxerRedisConnectionString);
 
             var logOptions = cacheOptions.FusionCacheEnabledOptions?.LoggingOptions;
 
