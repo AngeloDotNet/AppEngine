@@ -18,13 +18,6 @@ public static class RouteHandlerBuilderExtensions
 
     extension(RouteHandlerBuilder builder)
     {
-        //public RouteHandlerBuilder WithValidation<TModel>() where TModel : class
-        //{
-        //    builder.AddEndpointFilter<ValidatorFilter<TModel>>().ProducesValidationProblem();
-
-        //    return builder;
-        //}
-
         public RouteHandlerBuilder WithResponseDescription(int statusCode, string description)
         {
             builder.AddOpenApiOperationTransformer((operation, _, _) =>

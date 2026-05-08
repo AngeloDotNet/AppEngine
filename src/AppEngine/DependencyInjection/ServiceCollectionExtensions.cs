@@ -28,8 +28,8 @@ public static class ServiceCollectionExtensions
         /// <param name="apiPolicyOptions">Optional. A list of policy options to configure versioning policies, such as sunset dates and deprecation
         /// information, for specific API versions.</param>
         /// <returns>The same IServiceCollection instance so that additional calls can be chained.</returns>
-        //[Obsolete("This method is obsolete. Use the new AddVersioningApi method with updated parameters.")]
-        [Obsolete("This method is obsolete. Use the new AddVersioningApi method with two parameters.")]
+        //[Obsolete("This method is obsolete. Use the new AddVersioningApi method with two parameters.")]
+        [Obsolete("This method is obsolete. Use the new AddVersioningApi method without ApiVersioningOptions parameter.")]
         public IServiceCollection AddVersioningApi(string[] apiVersions, ApiVersioningOptions apiVersioningOptions, List<ApiPoliciesOptions> apiPolicyOptions)
         {
             var apiVersionOptions = new ApiVersioningOptions();
