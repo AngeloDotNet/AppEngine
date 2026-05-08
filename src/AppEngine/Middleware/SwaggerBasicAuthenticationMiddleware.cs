@@ -25,6 +25,7 @@ public class SwaggerBasicAuthenticationMiddleware(RequestDelegate next, IOptions
         }
 
         string? authenticationHeader = context.Request.Headers[HeaderNames.Authorization];
+
         if (authenticationHeader?.StartsWith("Basic ") == true)
         {
             // Get the credentials from request header
