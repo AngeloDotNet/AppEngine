@@ -1,7 +1,6 @@
-﻿using AppEngine.Tools.OperationResults.AspNetCore.Http;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
 
-namespace AppEngine.Tools.Validation;
+namespace AppEngine.Validations.Validation;
 
 public class ValidationOptions
 {

@@ -40,7 +40,6 @@ public static class OpenApiExtensions
 
     extension(OpenApiOptions options)
     {
-        //public static void AddSimpleAuthentication(this OpenApiOptions options, IConfiguration configuration, string sectionName = "Authentication")
         public void AddSimpleAuthentication(IConfiguration configuration, string sectionName)
         {
             options.AddSimpleAuthentication(configuration, sectionName, [], []);

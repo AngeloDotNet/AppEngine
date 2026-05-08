@@ -2,6 +2,7 @@
 using AppEngine.Caching.Settings;
 using Microsoft.Extensions.Caching.StackExchangeRedis;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Options;
 using StackExchange.Redis;
@@ -14,35 +15,6 @@ namespace AppEngine.Caching.DependencyInjection;
 
 public static class ServiceCollectionExtensions
 {
-    /// <summary>
-    /// Creates a new instance of RedisCacheOptions configured with the specified instance name and connection string.
-    /// </summary>
-    /// <param name="instanceName">The name to associate with the Redis cache instance. This value is used to distinguish cache data for different
-    /// application instances.</param>
-    /// <param name="redisConnectionString">The connection string used to connect to the Redis server. Must be a valid Redis connection string.</param>
-    /// <returns>A RedisCacheOptions object initialized with the provided instance name and connection string.</returns>
-    public static RedisCacheOptions GetRedisConnectionOptions(string instanceName, string redisConnectionString)
-    {
-        return new RedisCacheOptions
-        {
-            InstanceName = instanceName,
-            Configuration = redisConnectionString
-        };
-    }
-
-    /// <summary>
-    /// Creates a new instance of RedisBackplaneOptions configured with the specified Redis connection string.
-    /// </summary>
-    /// <param name="redisBackplaneConnectionString">The connection string used to configure the Redis backplane. Cannot be null or empty.</param>
-    /// <returns>A RedisBackplaneOptions instance initialized with the provided connection string.</returns>
-    public static RedisBackplaneOptions GetRedisBackplaneConnectionOptions(string redisBackplaneConnectionString)
-    {
-        return new RedisBackplaneOptions
-        {
-            Configuration = redisBackplaneConnectionString
-        };
-    }
-
     extension(IServiceCollection services)
     {
         /// <summary>
@@ -61,6 +33,9 @@ public static class ServiceCollectionExtensions
 
             var configuration = new FusionCacheEntrySettings();
             action.Invoke(configuration);
+
+            //services.AddTransient(_ => configuration);
+            services.TryAddTransient(_ => configuration);
 
             services.AddMemoryCache();
             services.AddFusionCache()
@@ -108,7 +83,12 @@ public static class ServiceCollectionExtensions
             var distributedSettings = new FusionCacheDistributedSettings();
             distributedAction.Invoke(distributedSettings);
 
-            var redisOptions = GetRedisConnectionOptions(distributedSettings.InstanceName, distributedSettings.RedisConnectionString);
+            //services.AddTransient(_ => configuration);
+            services.TryAddTransient(_ => configuration);
+            //services.AddTransient(_ => distributedSettings);
+            services.TryAddTransient(_ => distributedSettings);
+
+            var redisOptions = ServiceCollectionOptions.GetRedisConnectionOptions(distributedSettings.InstanceName, distributedSettings.RedisConnectionString);
 
             services.AddMemoryCache();
             services.AddFusionCache()
@@ -162,8 +142,13 @@ public static class ServiceCollectionExtensions
             var distributedSettings = new FusionCacheDistributedSettings();
             distributedAction.Invoke(distributedSettings);
 
+            //services.AddTransient(_ => configuration);
+            services.TryAddTransient(_ => configuration);
+            //services.AddTransient(_ => distributedSettings);
+            services.TryAddTransient(_ => distributedSettings);
+
             var cacheOptions = options.Value;
-            var redisOptions = GetRedisConnectionOptions(distributedSettings.InstanceName, distributedSettings.RedisConnectionString);
+            var redisOptions = ServiceCollectionOptions.GetRedisConnectionOptions(distributedSettings.InstanceName, distributedSettings.RedisConnectionString);
 
             services.AddMemoryCache();
             services.AddFusionCache()
@@ -222,11 +207,16 @@ public static class ServiceCollectionExtensions
             var distributedSettings = new FusionCacheDistributedSettings();
             distributedAction.Invoke(distributedSettings);
 
+            //services.AddTransient(_ => configuration);
+            services.TryAddTransient(_ => configuration);
+            //services.AddTransient(_ => distributedSettings);
+            services.TryAddTransient(_ => distributedSettings);
+
             var cacheOptions = options.Value;
             var fusionCacheEnabledOptions = cacheOptions.FusionCacheEnabledOptions;
 
-            var redisOptions = GetRedisConnectionOptions(distributedSettings.InstanceName, distributedSettings.RedisConnectionString);
-            var redisBackplaneOptions = GetRedisBackplaneConnectionOptions(distributedSettings.RedisConnectionString);
+            var redisOptions = ServiceCollectionOptions.GetRedisConnectionOptions(distributedSettings.InstanceName, distributedSettings.RedisConnectionString);
+            var redisBackplaneOptions = ServiceCollectionOptions.GetRedisBackplaneConnectionOptions(distributedSettings.RedisConnectionString);
 
             var muxerRedisConnectionString = distributedSettings.MuxerRedisConnectionString;
 

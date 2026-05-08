@@ -1,8 +1,8 @@
-﻿# AppEngine Caching
+# AppEngine Validations
 
 ## 🏷️ Introduction
 
-AppEngine Caching is a lightweight development engine for .NET web applications, designed to simplify and provide essential tools for developing web apps. It offers a collection of utilities, extensions, and validation mechanisms to streamline the development process and enhance productivity.
+AppEngine Validations is a lightweight development engine for .NET web applications, designed to simplify and provide essential tools for developing web apps. It offers a collection of utilities, extensions, and validation mechanisms to streamline the development process and enhance productivity.
 
 ## 📁 Project Structure
 
@@ -13,10 +13,10 @@ AppEngine/
 │   └── workflows/                              # GitHub Actions workflows for CI/CD
 │
 ├── src/
-│   ├── TinyAppEngine.Caching/                      # Caching utilities and implementations
-│   │   ├──  DependencyInjection/               # Dependency injection configurations for caching
-│   │   ├──  Options/                           # Caching options and configuration classes
-│   │   └──  Settings/                          # Caching settings and related classes
+│   ├── TinyAppEngine.Validations/              # Validation tools and utilities
+│   │   ├──  DependencyInjection/               # Dependency injection related classes and utilities
+│   │   ├──  FluentValidation/                  # Fluent validation rules and validators
+│   │   └──  Validation/                        # Validation logic and classes
 │   │   
 │   └── Directory.Build.props                   # Shared MSBuild properties
 │
@@ -35,10 +35,10 @@ AppEngine/
 
 ### Setup
 
-The libraries are available on [Baget](http://nuget.aepserver.it), just search for _TinyAppEngine.Caching_ in the Package Manager GUI or run the following command in the .NET CLI:
+The libraries are available on [Baget](http://nuget.aepserver.it), just search for _TinyAppEngine.Validations_ in the Package Manager GUI or run the following command in the .NET CLI:
 
 ```shell
-dotnet add package TinyAppEngine.Caching
+dotnet add package TinyAppEngine.Validations
 ```
 
 > [!NOTE]
@@ -67,12 +67,6 @@ dotnet add package TinyAppEngine.Caching
     </config>
 </configuration>
 ```
-
-<!--
-## ⚙️ Configuration
-
-## 💡 Usage
--->
 
 ## 📜 License
 

@@ -1,9 +1,5 @@
 ﻿# AppEngine
 
-<!--
-A lightweight development engine for .NET web applications, designed to simplify and provide essential tools for developing web apps.
--->
-
 ## 🏷️ Introduction
 
 AppEngine is a lightweight development engine for .NET web applications, designed to simplify and provide essential tools for developing web apps. It offers a collection of utilities, extensions, and validation mechanisms to streamline the development process and enhance productivity.
@@ -17,7 +13,7 @@ AppEngine/
 │   └── workflows/                              # GitHub Actions workflows for CI/CD
 │
 ├── src/
-│   ├── AppEngine/                              # Core functionalities and utilities
+│   ├── TinyAppEngine/                          # Core functionalities and utilities
 │   │   ├──  DependencyInjection/               # Dependency injection configurations and related classes
 │   │   ├──  Enums/                             # Enumeration types used across the project
 │   │   ├──  Extensions/                        # Extension methods for various classes and types

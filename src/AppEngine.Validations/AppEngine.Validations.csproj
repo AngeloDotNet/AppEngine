@@ -7,10 +7,10 @@
         <LangVersion>latest</LangVersion>
         <Authors>Angelo Pirola</Authors>
         <Company>Angelo Pirola</Company>
-        <Product>AppEngine.Tools</Product>
-        <Title>AppEngine Tools</Title>
+        <Product>AppEngine.Validations</Product>
+        <Title>AppEngine Validations</Title>
         <Description>A lightweight development engine for .NET web applications, designed to simplify and provide essential tools for developing web apps.</Description>
-        <PackageId>TinyAppEngine.Tools</PackageId>
+        <PackageId>TinyAppEngine.Validations</PackageId>
         <PackageLicenseExpression>MIT</PackageLicenseExpression>
         <PackageProjectUrl>https://github.com/AngeloDotNet/AppEngine</PackageProjectUrl>
         <PackageIcon>LibraryTools.png</PackageIcon>
@@ -24,9 +24,9 @@
     </ItemGroup>
 
     <ItemGroup>
-        <!--<PackageReference Include="FluentValidation" Version="12.1.1" />-->
-        <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.7" />
-        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.7" />
+        <PackageReference Include="FluentValidation" Version="12.1.1" />
+        <!--<PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.7" />
+        <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.7" />-->
     </ItemGroup>
 
     <ItemGroup>
