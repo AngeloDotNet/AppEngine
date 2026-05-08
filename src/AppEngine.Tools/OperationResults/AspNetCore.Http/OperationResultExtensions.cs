@@ -1,5 +1,5 @@
-﻿using System.Diagnostics;
-using Microsoft.AspNetCore.Http;
+﻿using Microsoft.AspNetCore.Http;
+using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.WebUtilities;
@@ -83,10 +83,15 @@ public static class OperationResultExtensions
             Status = statusCode,
             Title = title ?? ReasonPhrases.GetReasonPhrase(statusCode),
             Detail = detail,
-            Instance = httpContext.Request.Path
+            //Instance = httpContext.Request.Path
+            Instance = $"{httpContext.Request.Method} {httpContext.Request.Path}"
         };
 
-        problemDetails.Extensions.Add("traceId", Activity.Current?.Id ?? httpContext.TraceIdentifier);
+        //problemDetails.Extensions.Add("traceId", Activity.Current?.Id ?? httpContext.TraceIdentifier);
+        var activity = httpContext.Features.Get<IHttpActivityFeature>()?.Activity;
+        problemDetails.Extensions.TryAdd("traceId", activity?.Id);
+
+        problemDetails.Extensions.TryAdd("requestId", httpContext.TraceIdentifier);
 
         if (validationErrors?.Any() ?? false)
         {
