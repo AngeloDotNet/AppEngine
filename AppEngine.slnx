@@ -9,5 +9,6 @@
   </Folder>
   <Project Path="src/AppEngine.Caching/AppEngine.Caching.csproj" Id="fa2c4ce9-b9ba-4e17-8865-5b20ad1e6876" />
   <Project Path="src/AppEngine.Tools/AppEngine.Tools.csproj" Id="4ac3f771-7d07-48a8-a214-ba39131b6145" />
+  <Project Path="src/AppEngine.Validations/AppEngine.Validations.csproj" Id="438ae241-2c89-4560-977d-e412ffe03d68" />
   <Project Path="src/AppEngine/AppEngine.csproj" Id="e88d11a8-0450-4042-ac47-55588ec249ab" />
 </Solution>

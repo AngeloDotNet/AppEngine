@@ -1,8 +1,8 @@
-﻿# AppEngine
+﻿# AppEngine Tools
 
 ## 🏷️ Introduction
 
-AppEngine is a lightweight development engine for .NET web applications, designed to simplify and provide essential tools for developing web apps. It offers a collection of utilities, extensions, and validation mechanisms to streamline the development process and enhance productivity.
+AppEngine Tools is a lightweight development engine for .NET web applications, designed to simplify and provide essential tools for developing web apps. It offers a collection of utilities, extensions, and validation mechanisms to streamline the development process and enhance productivity.
 
 ## 📁 Project Structure
 
@@ -13,10 +13,10 @@ AppEngine/
 │   └── workflows/                              # GitHub Actions workflows for CI/CD
 │
 ├── src/
-│   ├── AppEngine.Tools/                        # Command-line tools and utilities
+│   ├── TinyAppEngine.Tools/                    # Command-line tools and utilities
+│   │   ├──  DependencyInjection/               # Dependency injection related classes and utilities
 │   │   ├──  ExceptionHandlers/                 # Custom exception handlers and related classes
 │   │   ├──  Extensions/                        # Extension methods specific to the tools
-│   │   ├──  FluentValidation/                  # Fluent validation rules and validators
 │   │   ├──  OpenApi/                           # OpenAPI related utilities and classes
 │   │   │    ├── Filters/                       # OpenAPI filters and related classes
 │   │   │    ├── Helpers/                       # OpenAPI helper classes and utilities
@@ -31,10 +31,8 @@ AppEngine/
 │   │   │    ├── Abstractions/                  # Abstractions and interfaces for authentication
 │   │   │    └── JWTBearer/                     # JWT Bearer authentication related classes and utilities
 │   │   │
-│   │   ├──  TimeZoneService/                   # Time zone related utilities and services
-│   │   │    └── Interfaces/                    # Interfaces for time zone services
-│   │   │
-│   │   └──  Validation/                        # Validation logic and classes
+│   │   └──  TimeZoneService/                   # Time zone related utilities and services
+│   │        └── Interfaces/                    # Interfaces for time zone services
 │   │   
 │   └── Directory.Build.props                   # Shared MSBuild properties
 │
