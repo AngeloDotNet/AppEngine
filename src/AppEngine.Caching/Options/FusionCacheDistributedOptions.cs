@@ -40,4 +40,9 @@ public class FusionCacheDistributedOptions
     /// Gets or sets the options used to configure FusionCache integration.
     /// </summary>
     public FusionCacheEnabledOptions? FusionCacheEnabledOptions { get; set; }
+
+    /// <summary>
+    /// Gets or sets the file system path used to store cached data.
+    /// </summary>
+    public string CachePath { get; set; } = string.Empty;
 }
