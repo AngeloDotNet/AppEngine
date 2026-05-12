@@ -1,4 +1,6 @@
-﻿namespace AppEngine.Caching.Options;
+﻿using AppEngine.Caching.Enums;
+
+namespace AppEngine.Caching.Options;
 
 /// <summary>
 /// Represents configuration options for enabling features in FusionCache, such as backplane integration, distributed
@@ -9,26 +11,18 @@
 /// disabled by default.</remarks>
 public class FusionCacheEnabledOptions
 {
-    /// <summary>
-    /// Gets or sets a value indicating whether the distributed cache backplane is enabled.
-    /// </summary>
-    /// <remarks>Enable this property to synchronize cache updates across multiple application instances using
-    /// a backplane mechanism. This is typically required in scaled-out or load-balanced environments to ensure cache
-    /// consistency.</remarks>
+    public bool EnableAllFusionCacheOptions { get; set; } = false;
+    public bool EnableDefaultEntryOptions { get; set; } = false;
+    public bool EnableSystemTextJsonSerializer { get; set; } = false;
+    public List<FusionCacheEntryEnumOptions> EnabledEntryOptions { get; set; } = [];
+    public DistributedCacheEnum DistributedCacheType { get; set; } = DistributedCacheEnum.Redis;
+    public bool EnableDistributedCache { get; set; } = false;
     public bool EnableBackplane { get; set; } = false;
+    public bool EnableDistributedLocker { get; set; } = false;
 
-    /// <summary>
-    /// Gets or sets a value indicating whether distributed stampede protection is enabled.
-    /// </summary>
-    /// <remarks>When enabled, the system coordinates across multiple instances to prevent multiple concurrent
-    /// requests from triggering the same expensive operation. This is useful in distributed environments to reduce
-    /// redundant processing and resource usage.</remarks>
-    public bool EnableDistributedStampedeProtection { get; set; } = false;
-
-    /// <summary>
-    /// Gets or sets a value indicating whether logging is enabled.
-    /// </summary>
-    public bool EnableLogging { get; set; } = false;
+    //public bool EnableBackplane { get; set; } = false;
+    //public bool EnableDistributedStampedeProtection { get; set; } = false;
+    //public bool EnableLogging { get; set; } = false;
 
     /// <summary>
     /// Gets or sets the logging options used to configure logging behavior for the cache instance.
