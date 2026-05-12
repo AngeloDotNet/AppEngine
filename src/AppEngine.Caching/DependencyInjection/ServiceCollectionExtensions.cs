@@ -1,15 +1,10 @@
 ﻿using AppEngine.Caching.Enums;
 using AppEngine.Caching.Options;
-using AppEngine.Caching.Settings;
-using Microsoft.Extensions.Caching.StackExchangeRedis;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
-using Microsoft.Extensions.DependencyInjection.Extensions;
-using Microsoft.Extensions.Options;
-using NeoSmart.Caching.Sqlite;
 using StackExchange.Redis;
 using ZiggyCreatures.Caching.Fusion;
-using ZiggyCreatures.Caching.Fusion.Backplane.StackExchangeRedis;
-using ZiggyCreatures.Caching.Fusion.Locking.Distributed.Redis;
+using ZiggyCreatures.Caching.Fusion.Serialization.NewtonsoftJson;
 using ZiggyCreatures.Caching.Fusion.Serialization.SystemTextJson;
 
 namespace AppEngine.Caching.DependencyInjection;
@@ -18,175 +13,142 @@ public static class ServiceCollectionExtensions
 {
     extension(IServiceCollection services)
     {
-        public IServiceCollection AddCustomFusionCache(Action<FusionCacheEntrySettings> action, Action<FusionCacheDistributedSettings> distributedAction,
-            IOptions<FusionCacheDistributedOptions> options)
+        //public async Task<IServiceCollection> AddCustomFusionCacheAsync(Action<FusionCacheEntrySettings> action,
+        //    Action<FusionCacheDistributedSettings> distributedAction, IOptions<FusionCacheDistributedOptions> options)
+        public async Task<IServiceCollection> AddCustomFusionCacheAsync(IConfiguration configuration)
         {
-            ArgumentNullException.ThrowIfNull(services);
-            ArgumentNullException.ThrowIfNull(action);
+            var options = configuration.GetSection("AppEngine.Caching:CacheOptions").Get<CacheOptions>()
+                ?? throw new InvalidOperationException("CacheOptions is null. Ensure that the configuration is properly set up.");
 
-            ArgumentNullException.ThrowIfNull(distributedAction);
-            ArgumentNullException.ThrowIfNull(options);
+            //ArgumentNullException.ThrowIfNull(services);
+            //ArgumentNullException.ThrowIfNull(action);
 
-            var configuration = new FusionCacheEntrySettings();
-            action.Invoke(configuration);
+            //ArgumentNullException.ThrowIfNull(distributedAction);
+            //ArgumentNullException.ThrowIfNull(options);
 
-            var distributedSettings = new FusionCacheDistributedSettings();
-            distributedAction.Invoke(distributedSettings);
+            //var configuration = new FusionCacheEntrySettings();
+            //action.Invoke(configuration);
 
-            services.TryAddTransient(_ => configuration);
-            services.TryAddTransient(_ => distributedSettings);
+            //var distributedSettings = new FusionCacheDistributedSettings();
+            //distributedAction.Invoke(distributedSettings);
 
-            var cacheOptions = options.Value;
-            var fusionCacheEnabledOptions = cacheOptions.FusionCacheEnabledOptions;
+            //services.TryAddTransient(_ => configuration);
+            //services.TryAddTransient(_ => distributedSettings);
 
-            var redisOptions = ServiceCollectionOptions.GetRedisConnectionOptions(distributedSettings.InstanceName, distributedSettings.RedisConnectionString);
-            var redisBackplaneOptions = ServiceCollectionOptions.GetRedisBackplaneConnectionOptions(distributedSettings.RedisConnectionString);
+            //var cacheOptions = options.Value;
+            //var fusionCacheEnabledOptions = cacheOptions.FusionCacheEnabledOptions;
 
-            var muxerRedisConnectionString = distributedSettings.MuxerRedisConnectionString;
+            //var redisOptions = ServiceCollectionOptions.GetRedisConnectionOptions(distributedSettings.InstanceName, distributedSettings.RedisConnectionString);
+            //var redisBackplaneOptions = ServiceCollectionOptions.GetRedisBackplaneConnectionOptions(distributedSettings.RedisConnectionString);
+
+            //var muxerRedisConnectionString = distributedSettings.MuxerRedisConnectionString;
+
+            //if (fusionCacheEnabledOptions is null)
+            //{
+            //    throw new InvalidOperationException("FusionCacheEnabledOptions is null. Ensure that the options are properly configured.");
+            //}
+
+            //var enableOptions = fusionCacheEnabledOptions.EnableAllFusionCacheOptions;
+            //var enableDefaultEntryOptions = fusionCacheEnabledOptions.EnableDefaultEntryOptions;
+            //var enableSystemTextJsonSerializer = fusionCacheEnabledOptions.EnableSystemTextJsonSerializer;
+
+            //var listEntryOptions = fusionCacheEnabledOptions.EnabledEntryOptions;
+            //var typeDistributedCache = fusionCacheEnabledOptions.DistributedCacheType;
+
+            //var enableDistributedCache = fusionCacheEnabledOptions.EnableDistributedCache;
+            //var enableBackplane = fusionCacheEnabledOptions.EnableBackplane;
+            //var enableDistributedLocker = fusionCacheEnabledOptions.EnableDistributedLocker;
 
             services.AddMemoryCache();
 
-            // TODO => Refactor this method to use the new AddFusionCacheWithOptionsAsync internal method for better modularity and maintainability.
-            //services.AddFusionCacheWithOptionsAsync();
+            var optionsFusionCache = new CacheOptions
+            {
+                EnableOptions = options.EnableOptions,
+                EnableDefaultEntryOptions = options.EnableDefaultEntryOptions,
+                EnableDistributedCache = options.EnableDistributedCache,
+                EnableBackplane = options.EnableBackplane,
+                EnableDistributedLocker = options.EnableDistributedLocker,
+                ListEntryOptions = options.ListEntryOptions,
+                EnableSystemTextJsonSerializer = options.EnableSystemTextJsonSerializer,
+                Configuration = options.Configuration,
+                CacheDistributedOptions = options.CacheDistributedOptions,
+                RedisOptions = options.RedisOptions,
+                RedisBackplaneOptions = options.RedisBackplaneOptions,
+                MuxerRedisConnectionString = options.MuxerRedisConnectionString,
+                TypeDistributedCache = options.TypeDistributedCache
+            };
+
+            //await services.AddFusionCacheWithOptionsAsync(enableOptions, enableDefaultEntryOptions, enableDistributedCache, enableBackplane,
+            //    enableDistributedLocker, listEntryOptions, enableSystemTextJsonSerializer, configuration, cacheOptions, redisOptions,
+            //    redisBackplaneOptions, muxerRedisConnectionString, typeDistributedCache);
+
+            await services.AddFusionCacheWithOptionsAsync(optionsFusionCache);
+
+            // TODO:
+            // - Cache Levels (Distributed, Local, Hybrid)
+            // - Cache Stampede protection with Redis (with and without backplane)
+            // - Conditional refresh
+            // - Tagging support
 
             return services;
         }
 
         #region "Internal Methods"
 
-        internal async Task<IServiceCollection> AddFusionCacheWithOptionsAsync(FusionCacheEntrySettings configuration,
-            RedisCacheOptions redisOptions, RedisBackplaneOptions redisBackplaneOptions, FusionCacheDistributedOptions cacheOptions,
-            string muxerRedisConnectionString, DistributedCacheEnum typeDistributedCache)
+        internal async Task<IServiceCollection> AddFusionCacheWithOptionsAsync(CacheOptions options)
+        //internal async Task<IServiceCollection> AddFusionCacheWithOptionsAsync(bool enableOptions, bool enableDefaultEntryOptions,
+        //    bool enableDistributedCache, bool enableBackplane, bool enableDistributedLocker, List<FusionCacheEntryEnumOptions> listEntryOptions,
+        //    bool enableSystemTextJsonSerializer, FusionCacheEntrySettings configuration, FusionCacheDistributedOptions cacheOptions,
+        //    RedisCacheOptions redisOptions, RedisBackplaneOptions redisBackplaneOptions, string muxerRedisConnectionString,
+        //    DistributedCacheEnum typeDistributedCache)
         {
-            // Create a single instance of ConnectionMultiplexer to be shared across the application
-            // This is important for performance and resource management when using StackExchange.Redis (Optimize Redis Usage)
-            //IConnectionMultiplexer muxer = await ConnectionMultiplexer.ConnectAsync(muxerRedisConnectionString);
-
-            //var logOptions = cacheOptions.FusionCacheEnabledOptions?.LoggingOptions;
-
             var builder = services.AddFusionCache();
 
-            var EnableOptions = true;
-            var EnableDefaultEntryOptions = true;
-            var EnableSystemTextJsonSerializer = true;
-
-            if (EnableOptions)
+            if (options.EnableOptions)
             {
-                builder.AddOptions(cacheOptions, FusionCacheEnumOptions.EnableAllFusionCacheOptions);
+                builder.AddOptions(options.CacheDistributedOptions, FusionCacheEnumOptions.EnableAllFusionCacheOptions);
             }
 
-            var listEntryOptions = new List<FusionCacheEntryEnumOptions>();
-
-            if (EnableDefaultEntryOptions)
+            if (options.EnableDefaultEntryOptions)
             {
-                builder.AddDefaultEntryOptions(cacheOptions, configuration, listEntryOptions);
+                builder.AddDefaultEntryOptions(options.CacheDistributedOptions, options.Configuration, options.ListEntryOptions);
             }
 
-            if (EnableSystemTextJsonSerializer)
+            if (options.EnableSystemTextJsonSerializer)
             {
                 builder.WithSerializer(new FusionCacheSystemTextJsonSerializer());
             }
-
-            var EnableDistributedCache = true;
-            var UseRedisMuxer = true;
+            else
+            {
+                builder.WithSerializer(new FusionCacheNewtonsoftJsonSerializer());
+            }
 
             // Create a single instance of ConnectionMultiplexer to be shared across the application
             // This is important for performance and resource management when using StackExchange.Redis (Optimize Redis Usage)
             IConnectionMultiplexer? muxer = null;
 
-            if (UseRedisMuxer)
+            if (muxer is not null)
             {
-                muxer = await ConnectionMultiplexer.ConnectAsync(muxerRedisConnectionString);
+                muxer = await ConnectionMultiplexer.ConnectAsync(options.MuxerRedisConnectionString);
             }
 
-            if (EnableDistributedCache)
+            if (options.EnableDistributedCache)
             {
-                if (typeDistributedCache == DistributedCacheEnum.Redis)
-                {
-                    if (muxer is null)
-                    {
-                        throw new InvalidOperationException("ConnectionMultiplexer instance is null. Ensure that the Redis connection is properly established.");
-                    }
-
-                    if (UseRedisMuxer)
-                    {
-                        builder.WithDistributedCache(new RedisCache(new RedisCacheOptions()
-                        {
-                            ConnectionMultiplexerFactory = () => Task.FromResult(muxer)
-                        }));
-                    }
-                    else
-                    {
-                        builder.WithDistributedCache(new RedisCache(redisOptions));
-                    }
-                }
-
-                if (typeDistributedCache == DistributedCacheEnum.SQLite)
-                {
-                    builder.WithDistributedCache(new SqliteCache(new SqliteCacheOptions { CachePath = cacheOptions.CachePath }));
-                }
+                builder.AddDistributedCache(options.CacheDistributedOptions, options.RedisOptions, options.TypeDistributedCache, muxer);
             }
 
-            var EnableBackplane = true;
-
-            if (EnableBackplane)
+            if (options.EnableBackplane)
             {
-                if (muxer is null)
-                {
-                    throw new InvalidOperationException("ConnectionMultiplexer instance is null. Ensure that the Redis connection is properly established.");
-                }
-
-                builder.WithBackplane(new RedisBackplane(new RedisBackplaneOptions()
-                {
-                    ConnectionMultiplexerFactory = () => Task.FromResult(muxer)
-                }));
-            }
-            else
-            {
-                builder.WithBackplane(new RedisBackplane(redisBackplaneOptions));
+                builder.AddRedisBackplane(options.RedisBackplaneOptions, muxer);
             }
 
-            var EnableDistributedLocker = true;
-
-            if (EnableDistributedLocker)
+            if (options.EnableDistributedLocker)
             {
-                if (muxer is null)
-                {
-                    throw new InvalidOperationException("ConnectionMultiplexer instance is null. Ensure that the Redis connection is properly established.");
-                }
-
-                if (UseRedisMuxer)
-                {
-                    builder.WithDistributedLocker(new RedisDistributedLocker(new RedisDistributedLockerOptions
-                    {
-                        ConnectionMultiplexerFactory = () => Task.FromResult(muxer)
-                    }));
-                }
-                else
-                {
-                    builder.WithDistributedLocker(new RedisDistributedLocker(new RedisDistributedLockerOptions
-                    {
-                        ConfigurationOptions = new ConfigurationOptions
-                        {
-                            EndPoints = { redisBackplaneOptions.Configuration! },
-                            Password = redisBackplaneOptions.ConfigurationOptions!.Password,
-                            Ssl = redisBackplaneOptions.ConfigurationOptions!.Ssl,
-                            ConnectTimeout = redisBackplaneOptions.ConfigurationOptions!.ConnectTimeout,
-                            SyncTimeout = redisBackplaneOptions.ConfigurationOptions!.SyncTimeout,
-                            AbortOnConnectFail = redisBackplaneOptions.ConfigurationOptions!.AbortOnConnectFail
-                        }
-                    }));
-                }
+                builder.AddDistributedLocker(options.RedisBackplaneOptions, muxer);
             }
 
             return builder.Services;
         }
-
-        // - TODO => Cache Levels (Distributed, Local, Hybrid)
-        // - TODO => Cache Stampede protection with Redis (with and without backplane)
-        // - TODO => Conditional refresh
-        // - OK => Disc cache with SQLite or similar
-        // - TODO => Tagging support
 
         #endregion
     }
