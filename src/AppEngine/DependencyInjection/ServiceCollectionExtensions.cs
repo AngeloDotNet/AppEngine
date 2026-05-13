@@ -3,7 +3,7 @@ using AppEngine.Versioning.Transformers;
 using Asp.Versioning;
 using Microsoft.Extensions.DependencyInjection;
 
-namespace ISM.Settings.Api.DependencyInjection;
+namespace AppEngine.DependencyInjection;
 
 /// <summary>
 /// Provides extension methods for configuring API versioning and related policies on an IServiceCollection instance.
