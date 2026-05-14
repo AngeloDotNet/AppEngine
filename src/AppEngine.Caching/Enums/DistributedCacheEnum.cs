@@ -2,6 +2,7 @@
 
 public enum DistributedCacheEnum
 {
+    None,
     Redis,
     SQLite
 }

@@ -5,7 +5,7 @@ using ZiggyCreatures.Caching.Fusion.Backplane.StackExchangeRedis;
 
 namespace AppEngine.Caching.Options;
 
-internal class CacheOptions
+public class CacheOptions
 {
     internal bool EnableOptions { get; set; }
     internal bool EnableDefaultEntryOptions { get; set; }
@@ -16,7 +16,7 @@ internal class CacheOptions
     internal bool EnableSystemTextJsonSerializer { get; set; }
     internal FusionCacheEntrySettings Configuration { get; set; } = new FusionCacheEntrySettings();
     internal FusionCacheDistributedOptions CacheDistributedOptions { get; set; } = new FusionCacheDistributedOptions();
-    internal RedisCacheOptions RedisOptions { get; set; } = new RedisCacheOptions();
+    internal RedisCacheOptions RedisCacheOptions { get; set; } = new RedisCacheOptions();
     internal RedisBackplaneOptions RedisBackplaneOptions { get; set; } = new RedisBackplaneOptions();
     internal string MuxerRedisConnectionString { get; set; } = string.Empty;
     internal DistributedCacheEnum TypeDistributedCache { get; set; }
