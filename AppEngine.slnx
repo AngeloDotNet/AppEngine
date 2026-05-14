@@ -1,4 +1,7 @@
 <Solution>
+  <Folder Name="/Samples/">
+    <Project Path="samples/AppEngine.Sample/AppEngine.Sample.csproj" Id="ae59d101-dd17-40d1-9aef-7fb42bb858de" />
+  </Folder>
   <Folder Name="/Solution Items/">
     <File Path=".editorconfig" />
     <File Path=".gitignore" />
