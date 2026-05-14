@@ -11,98 +11,139 @@ namespace AppEngine.Caching.DependencyInjection;
 
 public static class ServiceCollectionExtensions
 {
+    // TODO:
+    // - Cache Levels (Distributed, Local, Hybrid)
+    // - Cache Stampede protection with Redis (with and without backplane)
+    // - Conditional refresh
+    // - Tagging support
+
+    public static CacheOptions GetCustomFusionCache(IConfiguration configuration)
+    {
+        var optionsSection = configuration.GetSection("CacheOptions");
+        var cacheOptions = ServiceMaterializedExtensions.GetCacheOptions(optionsSection);
+        //var cacheOptions = new CacheOptions
+        //{
+        //    EnableOptions = optionsSection.GetValue<bool>("EnableOptions"),
+        //    EnableDefaultEntryOptions = optionsSection.GetValue<bool>("EnableDefaultEntryOptions"),
+        //    EnableDistributedCache = optionsSection.GetValue<bool>("EnableDistributedCache"),
+        //    EnableBackplane = optionsSection.GetValue<bool>("EnableBackplane"),
+        //    EnableDistributedLocker = optionsSection.GetValue<bool>("EnableDistributedLocker"),
+        //    ListEntryOptions = optionsSection.GetValue<List<FusionCacheEntryEnumOptions>>("ListEntryOptions") ?? [],
+        //    EnableSystemTextJsonSerializer = optionsSection.GetValue<bool>("EnableSystemTextJsonSerializer"),
+        //};
+
+        var fusionCacheEntrySettings = configuration.GetSection("FusionCacheEntrySettings");
+        var entryOptions = ServiceMaterializedExtensions.GetFusionCacheEntrySettings(fusionCacheEntrySettings);
+        //var entryOptions = new FusionCacheEntrySettings()
+        //{
+        //    Duration = TryParseTimeSpan(fusionCacheEntrySettings["Duration"], TimeSpan.FromMinutes(5)),
+        //    IsFailSafeEnabled = fusionCacheEntrySettings.GetSection("IsFailSafeEnabled").Get<bool>(),
+        //    FailSafeMaxDuration = TryParseTimeSpan(fusionCacheEntrySettings["FailSafeMaxDuration"], TimeSpan.FromHours(1)),
+        //    FailSafeThrottleDuration = TryParseTimeSpan(fusionCacheEntrySettings["FailSafeThrottleDuration"], TimeSpan.FromMinutes(5)),
+        //    EagerRefreshThreshold = TryParseFloat(fusionCacheEntrySettings["EagerRefreshThreshold"], 0.9f),
+        //    FactorySoftTimeout = TryParseTimeSpan(fusionCacheEntrySettings["FactorySoftTimeout"], TimeSpan.FromSeconds(1)),
+        //    FactoryHardTimeout = TryParseTimeSpan(fusionCacheEntrySettings["FactoryHardTimeout"], TimeSpan.FromSeconds(5))
+        //};
+
+        cacheOptions.Configuration = entryOptions;
+
+        var fusionCacheLoggingOptions = configuration.GetSection("FusionCacheLoggingOptions");
+        var loggingOptions = ServiceMaterializedExtensions.GetFusionCacheLoggingOptions(fusionCacheLoggingOptions);
+        //var loggingOptions = new FusionCacheLoggingOptions()
+        //{
+        //    FailSafeActivationLogLevel = TryParseEnum(fusionCacheLoggingOptions["FailSafeActivationLogLevel"], LogLevel.Debug),
+        //    SerializationErrorsLogLevel = TryParseEnum(fusionCacheLoggingOptions["SerializationErrorsLogLevel"], LogLevel.Warning),
+        //    DistributedCacheSyntheticTimeoutsLogLevel = TryParseEnum(fusionCacheLoggingOptions["DistributedCacheSyntheticTimeoutsLogLevel"], LogLevel.Debug),
+        //    DistributedCacheErrorsLogLevel = TryParseEnum(fusionCacheLoggingOptions["DistributedCacheErrorsLogLevel"], LogLevel.Error),
+        //    FactorySyntheticTimeoutsLogLevel = TryParseEnum(fusionCacheLoggingOptions["FactorySyntheticTimeoutsLogLevel"], LogLevel.Debug),
+        //    FactoryErrorsLogLevel = TryParseEnum(fusionCacheLoggingOptions["FactoryErrorsLogLevel"], LogLevel.Error)
+        //};
+
+        var fusionCacheEnabledOptions = configuration.GetSection("FusionCacheEnabledOptions");
+        var enabledOptions = ServiceMaterializedExtensions.GetFusionCacheEnabledOptions(fusionCacheEnabledOptions);
+        //var enabledOptions = new FusionCacheEnabledOptions()
+        //{
+        //    EnableAllFusionCacheOptions = fusionCacheEnabledOptions.GetValue<bool>("EnableAllFusionCacheOptions"),
+        //    EnableDefaultEntryOptions = fusionCacheEnabledOptions.GetValue<bool>("EnableDefaultEntryOptions"),
+        //    EnableSystemTextJsonSerializer = fusionCacheEnabledOptions.GetValue<bool>("EnableSystemTextJsonSerializer"),
+        //    EnabledEntryOptions = fusionCacheEnabledOptions.GetValue<List<FusionCacheEntryEnumOptions>>("EnabledEntryOptions") ?? [],
+        //    DistributedCacheType = TryParseEnum(fusionCacheEnabledOptions["DistributedCacheType"], DistributedCacheEnum.None),
+        //    EnableDistributedCache = fusionCacheEnabledOptions.GetValue<bool>("EnableDistributedCache"),
+        //    EnableBackplane = fusionCacheEnabledOptions.GetValue<bool>("EnableBackplane"),
+        //    EnableDistributedLocker = fusionCacheEnabledOptions.GetValue<bool>("EnableDistributedLocker"),
+        //    LoggingOptions = loggingOptions
+        //};
+
+        var fusionCacheJitterOptions = configuration.GetSection("JitterOptions");
+        var jitterOptions = ServiceMaterializedExtensions.GetFusionCacheJitterOptions(fusionCacheJitterOptions);
+        //var jitterOptions = new FusionCacheJitterOptions()
+        //{
+        //    DistributedCacheCircuitBreakerDuration = TryParseTimeSpan(fusionCacheJitterOptions["DistributedCacheCircuitBreakerDuration"], TimeSpan.FromSeconds(2)),
+        //    JitterMaxDuration = TryParseTimeSpan(fusionCacheJitterOptions["JitterMaxDuration"], TimeSpan.FromSeconds(2))
+        //};
+
+        var fusionCacheDistributedOptions = configuration.GetSection("FusionCacheDistributedOptions");
+        var distributedOptions = ServiceMaterializedExtensions.GetFusionCacheDistributedOptions(fusionCacheDistributedOptions);
+        //var distributedOptions = new FusionCacheDistributedOptions()
+        //{
+        //    DistributedCacheSoftTimeout = TryParseTimeSpan(fusionCacheDistributedOptions["DistributedCacheSoftTimeout"], TimeSpan.FromSeconds(1)),
+        //    DistributedCacheHardTimeout = TryParseTimeSpan(fusionCacheDistributedOptions["DistributedCacheHardTimeout"], TimeSpan.FromSeconds(5)),
+        //    AllowBackgroundDistributedCacheOperations = fusionCacheDistributedOptions.GetValue<bool>("AllowBackgroundDistributedCacheOperations"),
+        //    JitterOptions = jitterOptions,
+        //    FusionCacheEnabledOptions = enabledOptions,
+        //    CachePath = fusionCacheDistributedOptions["CachePath"] ?? string.Empty,
+        //};
+
+        //cacheOptions.CacheDistributedOptions = distributedOptions;
+
+        //cacheOptions.RedisCacheOptions = new RedisCacheOptions()
+        //{
+        //    Configuration = configuration["RedisCacheOptions:Configuration"],
+        //};
+
+        //cacheOptions.RedisBackplaneOptions = new RedisBackplaneOptions()
+        //{
+        //    Configuration = configuration["RedisBackplaneOptions:Configuration"],
+        //};
+
+        //cacheOptions.MuxerRedisConnectionString = configuration["MuxerRedisConnectionString"] ?? string.Empty;
+        //cacheOptions.TypeDistributedCache = TryParseEnum(configuration["TypeDistributedCache"], DistributedCacheEnum.None);
+
+        cacheOptions.CacheDistributedOptions = distributedOptions;
+
+        var otherCacheOptions = ServiceMaterializedExtensions.LoadCacheOptions(configuration, cacheOptions);
+
+        cacheOptions.RedisCacheOptions = otherCacheOptions.RedisCacheOptions;
+        cacheOptions.RedisBackplaneOptions = otherCacheOptions.RedisBackplaneOptions;
+
+        cacheOptions.MuxerRedisConnectionString = configuration["MuxerRedisConnectionString"] ?? string.Empty;
+        cacheOptions.TypeDistributedCache = otherCacheOptions.TypeDistributedCache;
+
+        return cacheOptions;
+
+        //static TimeSpan TryParseTimeSpan(string? value, TimeSpan defaultValue)
+        //{
+        //    return TimeSpan.TryParse(value, out var result) ? result : defaultValue;
+        //}
+
+        //static float TryParseFloat(string? value, float defaultValue)
+        //{
+        //    return float.TryParse(value, out var result) ? result : defaultValue;
+        //}
+
+        //static TEnum TryParseEnum<TEnum>(string? value, TEnum defaultValue) where TEnum : struct
+        //{
+        //    return Enum.TryParse<TEnum>(value, out var result) ? result : defaultValue;
+        //}
+    }
+
     extension(IServiceCollection services)
     {
-        //public async Task<IServiceCollection> AddCustomFusionCacheAsync(Action<FusionCacheEntrySettings> action,
-        //    Action<FusionCacheDistributedSettings> distributedAction, IOptions<FusionCacheDistributedOptions> options)
-        public async Task<IServiceCollection> AddCustomFusionCacheAsync(IConfiguration configuration)
+        public async Task<IServiceCollection> AddFusionCacheWithOptionsAsync(CacheOptions options)
         {
-            var options = configuration.GetSection("AppEngine.Caching:CacheOptions").Get<CacheOptions>()
-                ?? throw new InvalidOperationException("CacheOptions is null. Ensure that the configuration is properly set up.");
-
-            //ArgumentNullException.ThrowIfNull(services);
-            //ArgumentNullException.ThrowIfNull(action);
-
-            //ArgumentNullException.ThrowIfNull(distributedAction);
-            //ArgumentNullException.ThrowIfNull(options);
-
-            //var configuration = new FusionCacheEntrySettings();
-            //action.Invoke(configuration);
-
-            //var distributedSettings = new FusionCacheDistributedSettings();
-            //distributedAction.Invoke(distributedSettings);
-
-            //services.TryAddTransient(_ => configuration);
-            //services.TryAddTransient(_ => distributedSettings);
-
-            //var cacheOptions = options.Value;
-            //var fusionCacheEnabledOptions = cacheOptions.FusionCacheEnabledOptions;
-
-            //var redisOptions = ServiceCollectionOptions.GetRedisConnectionOptions(distributedSettings.InstanceName, distributedSettings.RedisConnectionString);
-            //var redisBackplaneOptions = ServiceCollectionOptions.GetRedisBackplaneConnectionOptions(distributedSettings.RedisConnectionString);
-
-            //var muxerRedisConnectionString = distributedSettings.MuxerRedisConnectionString;
-
-            //if (fusionCacheEnabledOptions is null)
-            //{
-            //    throw new InvalidOperationException("FusionCacheEnabledOptions is null. Ensure that the options are properly configured.");
-            //}
-
-            //var enableOptions = fusionCacheEnabledOptions.EnableAllFusionCacheOptions;
-            //var enableDefaultEntryOptions = fusionCacheEnabledOptions.EnableDefaultEntryOptions;
-            //var enableSystemTextJsonSerializer = fusionCacheEnabledOptions.EnableSystemTextJsonSerializer;
-
-            //var listEntryOptions = fusionCacheEnabledOptions.EnabledEntryOptions;
-            //var typeDistributedCache = fusionCacheEnabledOptions.DistributedCacheType;
-
-            //var enableDistributedCache = fusionCacheEnabledOptions.EnableDistributedCache;
-            //var enableBackplane = fusionCacheEnabledOptions.EnableBackplane;
-            //var enableDistributedLocker = fusionCacheEnabledOptions.EnableDistributedLocker;
-
-            services.AddMemoryCache();
-
-            var optionsFusionCache = new CacheOptions
-            {
-                EnableOptions = options.EnableOptions,
-                EnableDefaultEntryOptions = options.EnableDefaultEntryOptions,
-                EnableDistributedCache = options.EnableDistributedCache,
-                EnableBackplane = options.EnableBackplane,
-                EnableDistributedLocker = options.EnableDistributedLocker,
-                ListEntryOptions = options.ListEntryOptions,
-                EnableSystemTextJsonSerializer = options.EnableSystemTextJsonSerializer,
-                Configuration = options.Configuration,
-                CacheDistributedOptions = options.CacheDistributedOptions,
-                RedisOptions = options.RedisOptions,
-                RedisBackplaneOptions = options.RedisBackplaneOptions,
-                MuxerRedisConnectionString = options.MuxerRedisConnectionString,
-                TypeDistributedCache = options.TypeDistributedCache
-            };
-
-            //await services.AddFusionCacheWithOptionsAsync(enableOptions, enableDefaultEntryOptions, enableDistributedCache, enableBackplane,
-            //    enableDistributedLocker, listEntryOptions, enableSystemTextJsonSerializer, configuration, cacheOptions, redisOptions,
-            //    redisBackplaneOptions, muxerRedisConnectionString, typeDistributedCache);
-
-            await services.AddFusionCacheWithOptionsAsync(optionsFusionCache);
-
-            // TODO:
-            // - Cache Levels (Distributed, Local, Hybrid)
-            // - Cache Stampede protection with Redis (with and without backplane)
-            // - Conditional refresh
-            // - Tagging support
-
-            return services;
-        }
-
-        #region "Internal Methods"
-
-        internal async Task<IServiceCollection> AddFusionCacheWithOptionsAsync(CacheOptions options)
-        //internal async Task<IServiceCollection> AddFusionCacheWithOptionsAsync(bool enableOptions, bool enableDefaultEntryOptions,
-        //    bool enableDistributedCache, bool enableBackplane, bool enableDistributedLocker, List<FusionCacheEntryEnumOptions> listEntryOptions,
-        //    bool enableSystemTextJsonSerializer, FusionCacheEntrySettings configuration, FusionCacheDistributedOptions cacheOptions,
-        //    RedisCacheOptions redisOptions, RedisBackplaneOptions redisBackplaneOptions, string muxerRedisConnectionString,
-        //    DistributedCacheEnum typeDistributedCache)
-        {
-            var builder = services.AddFusionCache();
+            var builder = services
+                .AddMemoryCache()
+                .AddFusionCache();
 
             if (options.EnableOptions)
             {
@@ -125,16 +166,30 @@ public static class ServiceCollectionExtensions
 
             // Create a single instance of ConnectionMultiplexer to be shared across the application
             // This is important for performance and resource management when using StackExchange.Redis (Optimize Redis Usage)
-            IConnectionMultiplexer? muxer = null;
+            var muxer = options.RedisCacheOptions.ConnectionMultiplexerFactory?.Invoke().Result;
 
             if (muxer is not null)
             {
                 muxer = await ConnectionMultiplexer.ConnectAsync(options.MuxerRedisConnectionString);
             }
 
+            var redisCacheOptions = options.RedisCacheOptions.Configuration;
+
+            if (redisCacheOptions is null)
+            {
+                options.RedisCacheOptions.Configuration = string.Empty;
+            }
+
             if (options.EnableDistributedCache)
             {
-                builder.AddDistributedCache(options.CacheDistributedOptions, options.RedisOptions, options.TypeDistributedCache, muxer);
+                builder.AddDistributedCache(options.CacheDistributedOptions, options.RedisCacheOptions, options.TypeDistributedCache, muxer);
+            }
+
+            var redisBackplaneOptions = options.RedisBackplaneOptions.Configuration;
+
+            if (redisBackplaneOptions is null)
+            {
+                options.RedisBackplaneOptions.Configuration = string.Empty;
             }
 
             if (options.EnableBackplane)
@@ -149,7 +204,5 @@ public static class ServiceCollectionExtensions
 
             return builder.Services;
         }
-
-        #endregion
     }
 }
