@@ -20,10 +20,6 @@ public class FusionCacheEnabledOptions
     public bool EnableBackplane { get; set; } = false;
     public bool EnableDistributedLocker { get; set; } = false;
 
-    //public bool EnableBackplane { get; set; } = false;
-    //public bool EnableDistributedStampedeProtection { get; set; } = false;
-    //public bool EnableLogging { get; set; } = false;
-
     /// <summary>
     /// Gets or sets the logging options used to configure logging behavior for the cache instance.
     /// </summary>
