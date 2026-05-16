@@ -217,9 +217,8 @@ public static class ServiceCollectionExtensions
             return app;
         }
 
-        public WebApplication MapToolScalar(WebApplicationBuilder builder, ScalarSettings scalarSettings)
+        public WebApplication MapToolScalar(ScalarSettings scalarSettings)
         {
-            ArgumentNullException.ThrowIfNull(builder);
             ArgumentNullException.ThrowIfNull(scalarSettings);
 
             app.MapScalarApiReference(options =>
