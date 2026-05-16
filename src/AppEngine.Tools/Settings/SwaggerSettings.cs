@@ -1,4 +1,4 @@
-﻿namespace AppEngine.Settings;
+﻿namespace AppEngine.Tools.Settings;
 
 public class SwaggerSettings
 {

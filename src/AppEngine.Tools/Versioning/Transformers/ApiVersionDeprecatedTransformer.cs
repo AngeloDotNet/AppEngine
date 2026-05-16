@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.OpenApi;
 using Microsoft.OpenApi;
 
-namespace AppEngine.Versioning.Transformers;
+namespace AppEngine.Tools.Versioning.Transformers;
 
 public class ApiVersionDeprecatedTransformer : IOpenApiOperationTransformer
 {

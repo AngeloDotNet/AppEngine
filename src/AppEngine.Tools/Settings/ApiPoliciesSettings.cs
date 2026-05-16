@@ -6,7 +6,7 @@
 /// <remarks>This class is typically used to provide information about API versioning policies, such as version
 /// number, effective date, and related documentation links, for use in API metadata or documentation generation
 /// scenarios.</remarks>
-public class ApiPoliciesOptions
+public class ApiPoliciesSettings
 {
     /// <summary>
     /// Gets or sets the major version number of the application or component.

@@ -1,13 +1,13 @@
 ﻿using System.Net.Http.Headers;
 using System.Text;
-using AppEngine.Extensions;
-using AppEngine.Settings;
+using AppEngine.Tools.Extensions;
+using AppEngine.Tools.Settings;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Options;
 using Microsoft.Extensions.Primitives;
 using Microsoft.Net.Http.Headers;
 
-namespace AppEngine.Middleware;
+namespace AppEngine.Tools.Middleware;
 
 public class SwaggerBasicAuthenticationMiddleware(RequestDelegate next, IOptions<SwaggerSettings> settingsOptions)
 {
