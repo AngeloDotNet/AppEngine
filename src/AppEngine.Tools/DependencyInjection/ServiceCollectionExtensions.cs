@@ -195,7 +195,7 @@ public static class ServiceCollectionExtensions
 
     extension(WebApplication app)
     {
-        public WebApplication MapToolSwaggerUI(AppSettings appSettings, bool routePrefixIsEmpty = false)
+        public WebApplication MapToolSwaggerUI(AppSettings appSettings, bool routePrefixSetEmpty = false)
         {
             ArgumentNullException.ThrowIfNull(appSettings);
 
@@ -207,7 +207,7 @@ public static class ServiceCollectionExtensions
                     options.SwaggerEndpoint(url, $"{app.Environment.ApplicationName} {version}");
                 }
 
-                if (!routePrefixIsEmpty)
+                if (routePrefixSetEmpty is true)
                 {
                     // Serve the Swagger UI at the app's root (e.g., https://localhost:5001/)
                     options.RoutePrefix = string.Empty;
