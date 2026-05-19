@@ -1,5 +1,7 @@
 ﻿using System.Text.Json.Serialization;
+using AppEngine.Tools.Enums;
 using AppEngine.Tools.Extensions;
+using AppEngine.Tools.Middleware;
 using AppEngine.Tools.Serialization;
 using AppEngine.Tools.Settings;
 using AppEngine.Tools.Versioning.Transformers;
@@ -14,6 +16,46 @@ namespace AppEngine.Tools.DependencyInjection;
 
 public static class ServiceCollectionExtensions
 {
+    /// <summary>
+    /// Configures and maps the specified API documentation tool to the application pipeline.
+    /// </summary>
+    /// <param name="appSettings">Application configuration settings.</param>
+    /// <param name="toolDocumentation">The documentation tool to configure.</param>
+    /// <param name="swaggerSettings">Configuration settings for Swagger UI.</param>
+    /// <param name="scalarSettings">Configuration settings for Scalar.</param>
+    /// <param name="app">The web application to configure.</param>
+    public static void MapDocumentationTool(AppSettings appSettings, ApiDocumentationTool toolDocumentation, SwaggerSettings swaggerSettings,
+        ScalarSettings scalarSettings, WebApplication app)
+    {
+        if (toolDocumentation is not ApiDocumentationTool.None)
+        {
+            if (toolDocumentation == ApiDocumentationTool.SwaggerUI)
+            {
+                if (swaggerSettings.RequireAuthentication)
+                {
+                    app.UseMiddleware<SwaggerBasicAuthenticationMiddleware>();
+                }
+
+                app.MapToolSwaggerUI(appSettings, true);
+            }
+
+            if (toolDocumentation == ApiDocumentationTool.Scalar)
+            {
+                //var scalarSettings = new ScalarSettings()
+                //{
+                //	Title = $"{builder.Environment.ApplicationName} API Reference",
+
+                //	// Default: ScalarTheme.Mars
+                //	Theme = ScalarTheme.DeepSpace,
+
+                //	//Others parameters are optional, you can customize the Scalar UI as needed.
+                //};
+
+                app.MapToolScalar(scalarSettings);
+            }
+        }
+    }
+
     extension(IServiceCollection services)
     {
         /// <summary>
@@ -85,7 +127,6 @@ public static class ServiceCollectionExtensions
                 }
             }
 
-            //services.AddApiVersioning()
             services.AddApiVersioning(options => options = apiVersionOptions)
                 .AddApiExplorer(options =>
                 {
@@ -99,17 +140,11 @@ public static class ServiceCollectionExtensions
             {
                 services.AddOpenApi(description, options =>
                 {
-                    // Remove Servers list in OpenAPI.
-                    //options.RemoveServerList();
-
                     if (apiOptionSettings.RemoveServerList)
                     {
                         // Remove Servers list in OpenAPI.
                         options.RemoveServerList();
                     }
-
-                    // Enable OpenAPI integration for simple authentication.
-                    //options.AddSimpleAuthentication(builder.Configuration, "JwtSettings");
 
                     if (apiOptionSettings.AddSimpleAuthentication)
                     {
@@ -118,17 +153,11 @@ public static class ServiceCollectionExtensions
                         options.AddSimpleAuthentication(configuration, apiOptionSettings.SimpleAuthenticationSectionName);
                     }
 
-                    // Add Accept-Language header to all endpoints.
-                    //options.AddAcceptLanguageHeader();
-
                     if (apiOptionSettings.AddAcceptLanguageHeader)
                     {
                         // Add Accept-Language header to all endpoints.
                         options.AddAcceptLanguageHeader();
                     }
-
-                    // Add a default (error) response to all endpoints.
-                    //options.AddDefaultProblemDetailsResponse();
 
                     if (apiOptionSettings.AddDefaultProblemDetailsResponse)
                     {
@@ -136,17 +165,11 @@ public static class ServiceCollectionExtensions
                         options.AddDefaultProblemDetailsResponse();
                     }
 
-                    // Enable OpenAPI integration for custom parameters.
-                    //options.AddOperationParameters();
-
                     if (apiOptionSettings.AddOperationParameters)
                     {
                         // Enable OpenAPI integration for custom parameters.
                         options.AddOperationParameters();
                     }
-
-                    // Respect the ignored JsonNumberHandling attribute.
-                    //options.WriteNumberAsString(); 
 
                     if (apiOptionSettings.WriteNumberAsString)
                     {
@@ -154,17 +177,11 @@ public static class ServiceCollectionExtensions
                         options.WriteNumberAsString();
                     }
 
-                    // Describe all query string parameters in Camel Case.
-                    //options.DescribeAllParametersInCamelCase();
-
                     if (apiOptionSettings.DescribeAllParametersInCamelCase)
                     {
                         // Describe all query string parameters in Camel Case.
                         options.DescribeAllParametersInCamelCase();
                     }
-
-                    // Add time examples for TimeSpan and TimeOnly fields.
-                    //options.AddTimeExamples();
 
                     if (apiOptionSettings.AddTimeExamples)
                     {
@@ -195,6 +212,12 @@ public static class ServiceCollectionExtensions
 
     extension(WebApplication app)
     {
+        /// <summary>
+        /// Configures Swagger UI with API version endpoints from the application settings.
+        /// </summary>
+        /// <param name="appSettings">The application settings containing API version information.</param>
+        /// <param name="routePrefixSetEmpty">Indicates whether to serve Swagger UI at the application root.</param>
+        /// <returns>The configured WebApplication instance.</returns>
         public WebApplication MapToolSwaggerUI(AppSettings appSettings, bool routePrefixSetEmpty = false)
         {
             ArgumentNullException.ThrowIfNull(appSettings);
@@ -217,6 +240,11 @@ public static class ServiceCollectionExtensions
             return app;
         }
 
+        /// <summary>
+        /// Maps the Scalar API reference UI to the web application with the specified settings.
+        /// </summary>
+        /// <param name="scalarSettings">The settings to configure the Scalar API reference UI.</param>
+        /// <returns>The <see cref="WebApplication"/> instance for method chaining.</returns>
         public WebApplication MapToolScalar(ScalarSettings scalarSettings)
         {
             ArgumentNullException.ThrowIfNull(scalarSettings);
@@ -255,8 +283,8 @@ public static class ServiceCollectionExtensions
                 options.Theme = scalarSettings.Theme;
 
                 //options.Title = $"{builder.Environment.ApplicationName} API Reference";
-                //options.WithDefaultHttpClient(ScalarTarget.CSharp, ScalarClient.HttpClient);
                 options.Title = scalarSettings.Title;
+                //options.WithDefaultHttpClient(ScalarTarget.CSharp, ScalarClient.HttpClient);
                 options.WithDefaultHttpClient(scalarSettings.Target, scalarSettings.Client);
             });
 
