@@ -41,16 +41,6 @@ public static class ServiceCollectionExtensions
 
             if (toolDocumentation == ApiDocumentationTool.Scalar)
             {
-                //var scalarSettings = new ScalarSettings()
-                //{
-                //	Title = $"{builder.Environment.ApplicationName} API Reference",
-
-                //	// Default: ScalarTheme.Mars
-                //	Theme = ScalarTheme.DeepSpace,
-
-                //	//Others parameters are optional, you can customize the Scalar UI as needed.
-                //};
-
                 app.MapToolScalar(scalarSettings);
             }
         }
@@ -278,13 +268,9 @@ public static class ServiceCollectionExtensions
 
                 options.DarkMode = scalarSettings.DarkMode;
                 options.ShowSidebar = scalarSettings.ShowSidebar;
-
                 options.ShowDeveloperTools = scalarSettings.ShowDeveloperToolsVisibility;
                 options.Theme = scalarSettings.Theme;
-
-                //options.Title = $"{builder.Environment.ApplicationName} API Reference";
                 options.Title = scalarSettings.Title;
-                //options.WithDefaultHttpClient(ScalarTarget.CSharp, ScalarClient.HttpClient);
                 options.WithDefaultHttpClient(scalarSettings.Target, scalarSettings.Client);
             });
 
