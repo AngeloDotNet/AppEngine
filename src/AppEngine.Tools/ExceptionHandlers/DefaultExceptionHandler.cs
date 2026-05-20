@@ -21,11 +21,9 @@ internal class DefaultExceptionHandler(IProblemDetailsService problemDetailsServ
             Status = httpContext.Response.StatusCode,
             Title = exception.GetType().FullName,
             Detail = exception.Message,
-            //Instance = httpContext.Request.Path
             Instance = $"{httpContext.Request.Method} {httpContext.Request.Path}"
         };
 
-        //problemDetails.Extensions["traceId"] = Activity.Current?.Id ?? httpContext.TraceIdentifier;
         var activity = httpContext.Features.Get<IHttpActivityFeature>()?.Activity;
         problemDetails.Extensions.TryAdd("traceId", activity?.Id);
 
