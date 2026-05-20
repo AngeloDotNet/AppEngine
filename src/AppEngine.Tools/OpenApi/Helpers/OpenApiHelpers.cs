@@ -6,22 +6,23 @@ namespace AppEngine.Tools.OpenApi.Helpers;
 
 internal static class OpenApiHelpers
 {
-    public static OpenApiSecurityRequirement CreateSecurityRequirement(string name, OpenApiDocument document)
-        => new()
+    public static OpenApiSecurityRequirement CreateSecurityRequirement(string name, OpenApiDocument document) => new()
+    {
         {
-            { new OpenApiSecuritySchemeReference(name, document), [] }
-        };
+            new OpenApiSecuritySchemeReference(name, document),
+            []
+        }
+    };
 
-    public static OpenApiResponse CreateResponse(string description)
-        => new()
+    public static OpenApiResponse CreateResponse(string description) => new()
+    {
+        Description = description,
+        Content = new Dictionary<string, OpenApiMediaType>
         {
-            Description = description,
-            Content = new Dictionary<string, OpenApiMediaType>
+            [MediaTypeNames.Application.ProblemJson] = new()
             {
-                [MediaTypeNames.Application.ProblemJson] = new()
-                {
-                    Schema = new OpenApiSchemaReference(nameof(ProblemDetails))
-                }
+                Schema = new OpenApiSchemaReference(nameof(ProblemDetails))
             }
-        };
+        }
+    };
 }
