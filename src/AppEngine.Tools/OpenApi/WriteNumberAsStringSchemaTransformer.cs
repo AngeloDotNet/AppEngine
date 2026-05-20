@@ -12,8 +12,7 @@ internal class WriteNumberAsStringSchemaTransformer : IOpenApiSchemaTransformer
         var properties = context.JsonTypeInfo.Type
             .GetProperties(BindingFlags.Public | BindingFlags.Instance)
             .Where(prop => prop.GetCustomAttribute<JsonNumberHandlingAttribute>()?.Handling.HasFlag(JsonNumberHandling.WriteAsString) == true)
-            .Select(prop => prop.GetCustomAttribute<JsonPropertyNameAttribute>()?.Name
-                ?? context.JsonTypeInfo.Options.PropertyNamingPolicy?.ConvertName(prop.Name) ?? prop.Name)
+            .Select(prop => prop.GetCustomAttribute<JsonPropertyNameAttribute>()?.Name ?? context.JsonTypeInfo.Options.PropertyNamingPolicy?.ConvertName(prop.Name) ?? prop.Name)
             .Where(key => schema.Properties?.ContainsKey(key) ?? false);
 
         foreach (var property in properties)
