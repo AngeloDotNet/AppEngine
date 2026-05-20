@@ -24,7 +24,6 @@
     </ItemGroup>
 
     <ItemGroup>
-        <!--<PackageReference Include="FluentValidation" Version="12.1.1" />-->
         <PackageReference Include="Asp.Versioning.OpenApi" Version="10.0.0-rc.1" />
         <PackageReference Include="Asp.Versioning.Http" Version="10.0.0" />
         <PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" Version="10.0.0" />
@@ -39,7 +38,6 @@
             <Pack>True</Pack>
             <PackagePath></PackagePath>
         </None>
-        <!--<None Include="..\..\README.md" Pack="true" PackagePath="\" />-->
         <None Include="README.md" Pack="true" PackagePath="\" />
     </ItemGroup>
 </Project>
