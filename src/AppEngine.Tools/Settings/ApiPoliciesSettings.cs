@@ -1,4 +1,6 @@
-﻿namespace AppEngine.Versioning.Options;
+﻿using System.Net.Mime;
+
+namespace AppEngine.Versioning.Options;
 
 /// <summary>
 /// Represents configuration options for describing API versioning policies in metadata.
@@ -21,17 +23,17 @@ public class ApiPoliciesSettings
     /// <summary>
     /// Gets or sets the hyperlink associated with the item.
     /// </summary>
-    public string Link { get; set; } = string.Empty;
+    public string Link { get; set; } = "https://example.com/api/v1";
 
     /// <summary>
     /// Gets or sets the title associated with the resource.
     /// </summary>
-    public string Title { get; set; } = "https://github.com/dotnet/aspnet-api-versioning/wiki/Version-Policies";
+    public string Title { get; set; } = "Version 1.0"; // "https://github.com/dotnet/aspnet-api-versioning/wiki/Version-Policies";
 
     /// <summary>
     /// Gets or sets the media type of the content.
     /// </summary>
     /// <remarks>The media type is typically specified as a MIME type, such as "text/html" or
     /// "application/json". Setting this property determines how the content is interpreted by consumers.</remarks>
-    public string Type { get; set; } = "text/html";
+    public string Type { get; set; } = MediaTypeNames.Text.Html; //"text/html";
 }
