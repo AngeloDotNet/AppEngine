@@ -61,6 +61,10 @@ dotnet add package TinyAppEngine.Validations
         </packageSource>
     </packageSourceMapping>
 
+    <activePackageSource>
+        <add key="All" value="(Aggregate source)" />
+    </activePackageSource>
+
     <config>
         <!-- esempio: personalizzare la cartella dei pacchetti (opzionale) -->
         <!-- <add key="globalPackagesFolder" value="%USERPROFILE%\.nuget\packages" /> -->
