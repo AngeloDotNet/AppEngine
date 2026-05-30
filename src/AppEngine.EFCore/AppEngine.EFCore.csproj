@@ -1,0 +1,38 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+  <PropertyGroup>
+    <TargetFramework>net10.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+    <LangVersion>latest</LangVersion>
+    <Authors>Angelo Pirola</Authors>
+    <Company>Angelo Pirola</Company>
+    <Product>AppEngine.EFCore</Product>
+    <Title>AppEngine EFCore</Title>
+    <Description>A lightweight development engine for .NET web applications, designed to simplify and provide essential tools for developing web apps.</Description>
+    <PackageId>TinyAppEngine.EFCore</PackageId>
+    <PackageLicenseExpression>MIT</PackageLicenseExpression>
+    <PackageProjectUrl>https://github.com/AngeloDotNet/AppEngine</PackageProjectUrl>
+    <PackageIcon>LibraryTools.png</PackageIcon>
+    <RepositoryType>git</RepositoryType>
+    <RepositoryBranch>main</RepositoryBranch>
+    <PackageReadmeFile>README.md</PackageReadmeFile>
+  </PropertyGroup>
+
+  <ItemGroup>
+      <FrameworkReference Include="Microsoft.AspNetCore.App" />
+  </ItemGroup>
+
+    <ItemGroup>
+        <None Include="..\..\LibraryTools.png">
+            <Pack>True</Pack>
+            <PackagePath></PackagePath>
+        </None>
+        <None Include="README.md" Pack="true" PackagePath="\" />
+    </ItemGroup>
+
+    <ItemGroup>
+      <PackageReference Include="Microsoft.EntityFrameworkCore" Version="10.0.8" />
+      <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="10.0.8" />
+    </ItemGroup>
+</Project>
