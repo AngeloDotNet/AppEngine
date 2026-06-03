@@ -124,14 +124,6 @@ public static class ServiceCollectionExtensions
                 })
                 // Rif: https://devblogs.microsoft.com/dotnet/api-versioning-in-dotnet-10-applications/?WT.mc_id=DT-MVP-5005050&utm_content=376554164&utm_medium=social&utm_source=linkedin&hss_channel=lcp-18055275#setting-up-api-versioning-with-openapi-for-minimal-apis
                 .AddOpenApi();
-            //.AddOpenApi(options =>
-            //{
-            //    options.Document.AddDocumentTransformer((document, _, _) =>
-            //    {
-            //        document.Servers?.Clear();
-            //        return Task.CompletedTask;
-            //    });
-            //});
 
             foreach (var description in apiVersions)
             {
@@ -227,15 +219,8 @@ public static class ServiceCollectionExtensions
 
                 foreach (var description in descriptions)
                 {
-                    //options.SwaggerEndpoint($"/openapi/{description.GroupName}.json", description.GroupName);
                     options.SwaggerEndpoint($"/openapi/{description.GroupName}.json", $"{app.Environment.ApplicationName} {description.GroupName}");
                 }
-
-                //foreach (var version in appSettings.ApiVersions)
-                //{
-                //    var url = $"/openapi/{version}.json";
-                //    options.SwaggerEndpoint(url, $"{app.Environment.ApplicationName} {version}");
-                //}
 
                 if (routePrefixSetEmpty is true)
                 {
