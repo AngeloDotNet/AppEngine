@@ -201,6 +201,7 @@ public static class ServiceCollectionExtensions
         }
     }
 
+    //TODO: Clean up the code and remove unused usings and comments.
     extension(WebApplication app)
     {
         /// <summary>
@@ -213,21 +214,40 @@ public static class ServiceCollectionExtensions
         {
             ArgumentNullException.ThrowIfNull(appSettings);
 
-            app.UseSwaggerUI(options =>
+            var routePrefix = routePrefixSetEmpty ? string.Empty : "swagger";
+
+            app.MapSwaggerUI(routePrefix, options =>
             {
+                //options.RoutePrefix = routePrefixSetEmpty ? string.Empty : "swagger";
+
+                //foreach (var apiVersion in appSettings.ApiVersions)
+                //{
+                //    options.SwaggerEndpoint($"/swagger/{apiVersion}/swagger.json", $"API {apiVersion}");
+                //}
+
                 var descriptions = app.DescribeApiVersions();
 
                 foreach (var description in descriptions)
                 {
                     options.SwaggerEndpoint($"/openapi/{description.GroupName}.json", $"{app.Environment.ApplicationName} {description.GroupName}");
                 }
-
-                if (routePrefixSetEmpty is true)
-                {
-                    // Serve the Swagger UI at the app's root (e.g., https://localhost:5001/)
-                    options.RoutePrefix = string.Empty;
-                }
             });
+
+            //app.UseSwaggerUI(options =>
+            //{
+            //    var descriptions = app.DescribeApiVersions();
+
+            //    foreach (var description in descriptions)
+            //    {
+            //        options.SwaggerEndpoint($"/openapi/{description.GroupName}.json", $"{app.Environment.ApplicationName} {description.GroupName}");
+            //    }
+
+            //    if (routePrefixSetEmpty is true)
+            //    {
+            //        // Serve the Swagger UI at the app's root (e.g., https://localhost:5001/)
+            //        options.RoutePrefix = string.Empty;
+            //    }
+            //});
 
             return app;
         }
