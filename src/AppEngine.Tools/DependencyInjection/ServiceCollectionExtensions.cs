@@ -218,13 +218,6 @@ public static class ServiceCollectionExtensions
 
             app.MapSwaggerUI(routePrefix, options =>
             {
-                //options.RoutePrefix = routePrefixSetEmpty ? string.Empty : "swagger";
-
-                //foreach (var apiVersion in appSettings.ApiVersions)
-                //{
-                //    options.SwaggerEndpoint($"/swagger/{apiVersion}/swagger.json", $"API {apiVersion}");
-                //}
-
                 var descriptions = app.DescribeApiVersions();
 
                 foreach (var description in descriptions)
@@ -232,22 +225,6 @@ public static class ServiceCollectionExtensions
                     options.SwaggerEndpoint($"/openapi/{description.GroupName}.json", $"{app.Environment.ApplicationName} {description.GroupName}");
                 }
             });
-
-            //app.UseSwaggerUI(options =>
-            //{
-            //    var descriptions = app.DescribeApiVersions();
-
-            //    foreach (var description in descriptions)
-            //    {
-            //        options.SwaggerEndpoint($"/openapi/{description.GroupName}.json", $"{app.Environment.ApplicationName} {description.GroupName}");
-            //    }
-
-            //    if (routePrefixSetEmpty is true)
-            //    {
-            //        // Serve the Swagger UI at the app's root (e.g., https://localhost:5001/)
-            //        options.RoutePrefix = string.Empty;
-            //    }
-            //});
 
             return app;
         }
