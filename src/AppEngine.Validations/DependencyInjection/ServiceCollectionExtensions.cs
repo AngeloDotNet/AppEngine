@@ -6,38 +6,13 @@ namespace AppEngine.Validations.DependencyInjection;
 
 public static class ServiceCollectionExtensions
 {
-    //extension(IServiceCollection services)
-    //{
-    //    public IServiceCollection AddHttpJsonOptions()
-    //    {
-    //        services.ConfigureHttpJsonOptions(options =>
-    //        {
-    //            options.SerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
-    //            options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
-    //            options.SerializerOptions.Converters.Add(new UtcDateTimeConverter());
-    //        });
-
-    //        return services;
-    //    }
-
-    //    public T? ConfigureAndGet<T>(IConfiguration configuration, string sectionName) where T : class
-    //    {
-    //        ArgumentNullException.ThrowIfNull(services);
-    //        ArgumentNullException.ThrowIfNull(configuration);
-    //        ArgumentNullException.ThrowIfNull(sectionName);
-
-    //        var section = configuration.GetSection(sectionName);
-    //        services.Configure<T>(section);
-
-    //        var settings = Activator.CreateInstance<T>();
-    //        section.Bind(settings);
-
-    //        return settings;
-    //    }
-    //}
-
     extension(RouteHandlerBuilder builder)
     {
+        /// <summary>
+        /// Adds validation to the endpoint using the specified model type. The model will be validated using FluentValidation validators.
+        /// </summary>
+        /// <typeparam name="TModel">The type of the model to validate.</typeparam>
+        /// <returns>The updated <see cref="RouteHandlerBuilder"/> instance.</returns>
         public RouteHandlerBuilder WithValidation<TModel>() where TModel : class
         {
             builder.AddEndpointFilter<ValidatorFilter<TModel>>().ProducesValidationProblem();
