@@ -201,7 +201,6 @@ public static class ServiceCollectionExtensions
         }
     }
 
-    //TODO: Clean up the code and remove unused usings and comments.
     extension(WebApplication app)
     {
         /// <summary>
