@@ -2,6 +2,7 @@
 using AppEngine.Tools.OpenApi.Filters;
 using AppEngine.Tools.OpenApi.Options;
 using AppEngine.Tools.OpenApi.SimpleAuthentication;
+using AppEngine.Tools.Settings;
 using Microsoft.AspNetCore.OpenApi;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -36,10 +37,7 @@ public static class OpenApiExtensions
         public OpenApiOptions WriteNumberAsString() => options.AddSchemaTransformer<WriteNumberAsStringSchemaTransformer>();
         public OpenApiOptions DescribeAllParametersInCamelCase() => options.AddOperationTransformer<CamelCaseQueryParametersOperationTransformer>();
         public OpenApiOptions AddTimeExamples() => options.AddSchemaTransformer<TimeExampleSchemaTransformer>();
-    }
 
-    extension(OpenApiOptions options)
-    {
         public void AddSimpleAuthentication(IConfiguration configuration, string sectionName)
         {
             options.AddSimpleAuthentication(configuration, sectionName, [], []);
@@ -55,6 +53,32 @@ public static class OpenApiExtensions
             options.AddDocumentTransformer(new AuthenticationDocumentTransformer(configuration, sectionName, addSecurityRequirements, addSecurityDefinitionNames));
             options.AddDocumentTransformer<DefaultResponseDocumentTransformer>();
             options.AddOperationTransformer<AuthenticationOperationTransformer>();
+        }
+
+        //public void AddKeyCloakAuthentication(string name, string authorizationUrl, string tokenUrl, IDictionary<string, string> scopes)
+        public void AddKeyCloakAuthentication(KeyCloakSettings settings)
+        {
+            ArgumentNullException.ThrowIfNull(options);
+            ArgumentNullException.ThrowIfNull(settings);
+            //ArgumentException.ThrowIfNullOrWhiteSpace(settings.Name);
+            //ArgumentException.ThrowIfNullOrWhiteSpace(settings.AuthorizationUrl);
+            //ArgumentException.ThrowIfNullOrWhiteSpace(settings.TokenUrl);
+            //ArgumentNullException.ThrowIfNull(settings.Scopes);
+
+            options.AddKeyCloakAuthentication(settings.Name, new()
+            {
+                AuthorizationUrl = new(settings.AuthorizationUrl),
+                TokenUrl = new(settings.TokenUrl),
+                Scopes = settings.Scopes
+            });
+        }
+
+        internal void AddKeyCloakAuthentication(string name, OpenApiOAuthFlow authFlow)
+        {
+            ArgumentNullException.ThrowIfNull(options);
+            ArgumentNullException.ThrowIfNull(authFlow);
+
+            options.AddDocumentTransformer(new KeyCloakAuthenticationDocumentTransformer(name, authFlow));
         }
     }
 }
