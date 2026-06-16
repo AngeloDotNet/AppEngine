@@ -55,15 +55,10 @@ public static class OpenApiExtensions
             options.AddOperationTransformer<AuthenticationOperationTransformer>();
         }
 
-        //public void AddKeyCloakAuthentication(string name, string authorizationUrl, string tokenUrl, IDictionary<string, string> scopes)
         public void AddKeyCloakAuthentication(KeyCloakSettings settings)
         {
             ArgumentNullException.ThrowIfNull(options);
             ArgumentNullException.ThrowIfNull(settings);
-            //ArgumentException.ThrowIfNullOrWhiteSpace(settings.Name);
-            //ArgumentException.ThrowIfNullOrWhiteSpace(settings.AuthorizationUrl);
-            //ArgumentException.ThrowIfNullOrWhiteSpace(settings.TokenUrl);
-            //ArgumentNullException.ThrowIfNull(settings.Scopes);
 
             options.AddKeyCloakAuthentication(settings.Name, new()
             {
