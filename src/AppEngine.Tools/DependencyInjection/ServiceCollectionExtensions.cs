@@ -36,7 +36,7 @@ public static class ServiceCollectionExtensions
                     app.UseMiddleware<SwaggerBasicAuthenticationMiddleware>();
                 }
 
-                app.MapToolSwaggerUI(appSettings, true);
+                app.MapToolSwaggerUI(appSettings, swaggerSettings, true);
             }
 
             if (toolDocumentation == ApiDocumentationTool.Scalar)
@@ -88,15 +88,16 @@ public static class ServiceCollectionExtensions
         }
 
         /// <summary>
-        /// Adds API versioning and OpenAPI support to the service collection with configurable options.
+        /// Configures services with a configuration section and returns a bound instance of the configuration object.
         /// </summary>
-        /// <param name="apiVersions">The array of API version strings to configure.</param>
-        /// <param name="configuration">The application configuration.</param>
-        /// <param name="apiOptionSettings">The settings that control OpenAPI configuration options.</param>
-        /// <param name="apiPolicyOptions">The optional list of API policy settings for version sunset policies.</param>
-        /// <returns>The service collection for method chaining.</returns>
+        /// <param name="apiVersions"></param>
+        /// <param name="configuration"></param>
+        /// <param name="apiOptionSettings"></param>
+        /// <param name="apiPolicyOptions"></param>
+        /// <param name="keyCloakSettings"></param>
+        /// <returns></returns>
         public IServiceCollection AddVersioningApi(string[] apiVersions, IConfiguration configuration, OpenApiOptionSettings apiOptionSettings,
-            List<ApiPoliciesSettings> apiPolicyOptions)
+            List<ApiPoliciesSettings> apiPolicyOptions, KeyCloakSettings keyCloakSettings)
         {
             ArgumentNullException.ThrowIfNull(services);
             ArgumentNullException.ThrowIfNull(apiVersions);
@@ -140,6 +141,12 @@ public static class ServiceCollectionExtensions
                         // Enable OpenAPI integration for simple authentication.
                         //options.AddSimpleAuthentication(configuration, "JwtSettings");
                         options.AddSimpleAuthentication(configuration, apiOptionSettings.SimpleAuthenticationSectionName);
+                    }
+
+                    if (apiOptionSettings.AddKeyCloakAuthentication)
+                    {
+                        // Enable OpenAPI integration for Keycloak authentication.
+                        options.AddKeyCloakAuthentication(keyCloakSettings);
                     }
 
                     if (apiOptionSettings.AddAcceptLanguageHeader)
@@ -208,8 +215,10 @@ public static class ServiceCollectionExtensions
         /// </summary>
         /// <param name="appSettings">The application settings containing API version information.</param>
         /// <param name="routePrefixSetEmpty">Indicates whether to serve Swagger UI at the application root.</param>
+        /// <param name="useKeyCloakAuth">Indicates whether to use KeyCloak authentication.</param>
+        /// <param name="keycloakClientId">The KeyCloak client ID to use for authentication.</param>
         /// <returns>The configured WebApplication instance.</returns>
-        public WebApplication MapToolSwaggerUI(AppSettings appSettings, bool routePrefixSetEmpty = false)
+        public WebApplication MapToolSwaggerUI(AppSettings appSettings, SwaggerSettings swaggerSettings, bool routePrefixSetEmpty = false)
         {
             ArgumentNullException.ThrowIfNull(appSettings);
 
@@ -222,6 +231,12 @@ public static class ServiceCollectionExtensions
                 foreach (var description in descriptions)
                 {
                     options.SwaggerEndpoint($"/openapi/{description.GroupName}.json", $"{app.Environment.ApplicationName} {description.GroupName}");
+                }
+
+                if (swaggerSettings.UseKeyCloakAuth)
+                {
+                    options.OAuthClientId(swaggerSettings.KeyCloakClientId);
+                    options.OAuthUsePkce();
                 }
             });
 
