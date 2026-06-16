@@ -14,7 +14,6 @@ public static class SimpleAuthenticationExtensions
 {
     extension(IServiceCollection services)
     {
-        //public static AuthenticationBuilder AddSimpleAuthentication(this IServiceCollection services, IConfiguration configuration, string sectionName = "Authentication", bool addAuthorizationServices = true)
         public AuthenticationBuilder AddSimpleAuthentication(IConfiguration configuration, string sectionName, bool addAuthorizationServices = true)
         {
             ArgumentNullException.ThrowIfNull(services);
@@ -40,7 +39,6 @@ public static class SimpleAuthenticationExtensions
 
     extension(AuthenticationBuilder builder)
     {
-        //public static AuthenticationBuilder AddSimpleAuthentication(this AuthenticationBuilder builder, IConfiguration configuration, string sectionName = "Authentication", bool addAuthorizationServices = true)
         public AuthenticationBuilder AddSimpleAuthentication(IConfiguration configuration, string sectionName, bool addAuthorizationServices = true)
         {
             ArgumentNullException.ThrowIfNull(builder);
