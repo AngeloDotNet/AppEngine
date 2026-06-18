@@ -27,22 +27,20 @@ public static class ServiceCollectionExtensions
     public static void MapDocumentationTool(AppSettings appSettings, ApiDocumentationTool toolDocumentation, SwaggerSettings swaggerSettings,
         ScalarSettings scalarSettings, WebApplication app)
     {
-        if (toolDocumentation is not ApiDocumentationTool.None)
+        switch (toolDocumentation)
         {
-            if (toolDocumentation == ApiDocumentationTool.SwaggerUI)
-            {
+            case ApiDocumentationTool.SwaggerUI:
                 if (swaggerSettings.RequireAuthentication)
                 {
                     app.UseMiddleware<SwaggerBasicAuthenticationMiddleware>();
                 }
 
                 app.MapToolSwaggerUI(appSettings, swaggerSettings, true);
-            }
+                break;
 
-            if (toolDocumentation == ApiDocumentationTool.Scalar)
-            {
+            case ApiDocumentationTool.Scalar:
                 app.MapToolScalar(scalarSettings);
-            }
+                break;
         }
     }
 
