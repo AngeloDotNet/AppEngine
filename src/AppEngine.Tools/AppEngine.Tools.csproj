@@ -29,8 +29,9 @@
         <PackageReference Include="Asp.Versioning.Mvc.ApiExplorer" Version="10.0.0" />
         <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="10.0.9" />
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.9" />
-        <PackageReference Include="Scalar.AspNetCore" Version="2.16.10" />
+        <PackageReference Include="Scalar.AspNetCore" Version="2.16.11" />
         <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="10.2.3" />
+        <PackageReference Include="Microsoft.OpenApi" Version="2.9.0" />
     </ItemGroup>
 
     <ItemGroup>
@@ -42,6 +43,6 @@
     </ItemGroup>
 
     <ItemGroup>
-      <PackageReference Update="Nerdbank.GitVersioning" Version="3.10.85" />
+      <PackageReference Update="Nerdbank.GitVersioning" Version="3.10.91" />
     </ItemGroup>
 </Project>
