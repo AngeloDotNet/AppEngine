@@ -31,7 +31,7 @@
         <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="10.0.10" />
         <PackageReference Include="Scalar.AspNetCore" Version="2.16.12" />
         <PackageReference Include="Swashbuckle.AspNetCore.SwaggerUI" Version="10.2.3" />
-        <PackageReference Include="Microsoft.OpenApi" Version="2.9.0" />
+        <PackageReference Include="Microsoft.OpenApi" Version="3.9.0" />
     </ItemGroup>
 
     <ItemGroup>
