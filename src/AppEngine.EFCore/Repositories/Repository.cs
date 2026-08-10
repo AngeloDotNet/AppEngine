@@ -94,10 +94,10 @@ public class Repository<TEntity, TKey, TDbContext>(TDbContext dbContext) : IRepo
         await DbContext.SaveChangesAsync(cancellationToken);
     }
 
-    public virtual void AddAsync(TEntity entity)
+    public virtual void Add(TEntity entity)
         => DbSet.Add(entity);
 
-    public virtual void AddRangeAsync(IEnumerable<TEntity> entities)
+    public virtual void AddRange(IEnumerable<TEntity> entities)
         => DbSet.AddRange(entities);
 
     public virtual void Update(TEntity entity)
