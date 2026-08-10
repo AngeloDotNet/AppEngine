@@ -11,6 +11,13 @@ public interface IRepository<TEntity, TKey> where TEntity : class
     Task<int> CountAsync(CancellationToken cancellationToken = default);
     Task AddAsync(TEntity entity, CancellationToken cancellationToken = default);
     Task AddRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default);
+    Task UpdateAsync(TEntity entity, CancellationToken cancellationToken = default);
+    Task UpdateRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default);
+    Task DeleteAsync(TEntity entity, CancellationToken cancellationToken = default);
+    Task DeleteRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default);
+    Task DeleteByIdAsync(TKey id, CancellationToken cancellationToken = default);
+    void AddAsync(TEntity entity);
+    void AddRangeAsync(IEnumerable<TEntity> entities);
     void Update(TEntity entity);
     void UpdateRange(IEnumerable<TEntity> entities);
     void Delete(TEntity entity);
