@@ -48,10 +48,57 @@ public class Repository<TEntity, TKey, TDbContext>(TDbContext dbContext) : IRepo
         => await DbSet.CountAsync(cancellationToken);
 
     public virtual async Task AddAsync(TEntity entity, CancellationToken cancellationToken = default)
-        => await DbSet.AddAsync(entity, cancellationToken);
+    {
+        await DbSet.AddAsync(entity, cancellationToken);
+        await DbContext.SaveChangesAsync(cancellationToken);
+    }
 
     public virtual async Task AddRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default)
-        => await DbSet.AddRangeAsync(entities, cancellationToken);
+    {
+        await DbSet.AddRangeAsync(entities, cancellationToken);
+        await DbContext.SaveChangesAsync(cancellationToken);
+    }
+
+    public virtual async Task UpdateAsync(TEntity entity, CancellationToken cancellationToken = default)
+    {
+        DbSet.Update(entity);
+        await DbContext.SaveChangesAsync(cancellationToken);
+    }
+
+    public virtual async Task UpdateRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default)
+    {
+        DbSet.UpdateRange(entities);
+        await DbContext.SaveChangesAsync(cancellationToken);
+    }
+
+    public virtual async Task DeleteByIdAsync(TKey id, CancellationToken cancellationToken = default)
+    {
+        var entity = await GetByIdAsync(id, cancellationToken);
+
+        if (entity is not null)
+        {
+            DbSet.Remove(entity);
+            await DbContext.SaveChangesAsync(cancellationToken);
+        }
+    }
+
+    public virtual async Task DeleteAsync(TEntity entity, CancellationToken cancellationToken = default)
+    {
+        DbSet.Remove(entity);
+        await DbContext.SaveChangesAsync(cancellationToken);
+    }
+
+    public virtual async Task DeleteRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default)
+    {
+        DbSet.RemoveRange(entities);
+        await DbContext.SaveChangesAsync(cancellationToken);
+    }
+
+    public virtual void AddAsync(TEntity entity)
+        => DbSet.Add(entity);
+
+    public virtual void AddRangeAsync(IEnumerable<TEntity> entities)
+        => DbSet.AddRange(entities);
 
     public virtual void Update(TEntity entity)
         => DbSet.Update(entity);
