@@ -1,0 +1,25 @@
+name: Delete old workflow runs
+
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '0 */8 * * *' # Run daily, every 8 hours.
+
+env:
+  REPOSITORY: AngeloDotNet/AppEngine
+  
+jobs:
+  delete_runs:
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+      contents: read
+    
+    steps:
+      - name: Delete workflow runs
+        uses: Mattraks/delete-workflow-runs@v2
+        with:
+          token: ${{ secrets.GITHUB_TOKEN }}
+          repository: ${{ env.REPOSITORY }}
+          retain_days: 3
+          keep_minimum_runs: 1
