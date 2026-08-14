@@ -9,6 +9,8 @@ public interface IRepository<TEntity, TKey> where TEntity : class
     Task<PagedResult<TEntity>> GetPagedAsync(int pageNumber, int pageSize, CancellationToken cancellationToken = default);
     Task<bool> ExistsAsync(TKey id, CancellationToken cancellationToken = default);
     Task<int> CountAsync(CancellationToken cancellationToken = default);
+
+    // Asynchronous methods
     Task AddAsync(TEntity entity, CancellationToken cancellationToken = default);
     Task AddRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default);
     Task UpdateAsync(TEntity entity, CancellationToken cancellationToken = default);
@@ -16,6 +18,8 @@ public interface IRepository<TEntity, TKey> where TEntity : class
     Task DeleteAsync(TEntity entity, CancellationToken cancellationToken = default);
     Task DeleteRangeAsync(IEnumerable<TEntity> entities, CancellationToken cancellationToken = default);
     Task DeleteByIdAsync(TKey id, CancellationToken cancellationToken = default);
+
+    // Synchronous methods
     void Add(TEntity entity);
     void AddRange(IEnumerable<TEntity> entities);
     void Update(TEntity entity);
