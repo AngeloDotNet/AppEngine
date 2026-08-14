@@ -39,7 +39,7 @@ public static class GenericCrudEndpoints
     /// <item><description><c>DELETE /{id}</c> to delete an existing entity.</description></item>
     /// </list>
     /// </remarks>
-    public static RouteGroupBuilder MapCrud<TEntity, TKey, TReadDto, TCreateDto, TUpdateDto>(this IEndpointRouteBuilder app, string routePrefix,
+    public static RouteGroupBuilder MapCrudEndpoints<TEntity, TKey, TReadDto, TCreateDto, TUpdateDto>(this IEndpointRouteBuilder app, string routePrefix,
         string tags, string validationGroupName, Func<TEntity, TKey> idSelector, Func<TEntity, TReadDto> toReadDto, Func<TCreateDto, TEntity> toEntityFromCreate,
         Action<TEntity, TUpdateDto> applyUpdate) where TEntity : class where TKey : notnull where TCreateDto : class where TUpdateDto : class
     {
