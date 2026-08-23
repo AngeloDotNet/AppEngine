@@ -1,4 +1,5 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using System.Text.Json;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Routing;
@@ -73,7 +74,12 @@ public static class OperationResultExtensions
         var options = httpContext.RequestServices.GetService<OperationResultOptions>() ?? new OperationResultOptions();
         var statusCode = options.MapStatusCodes ? options.GetStatusCode(failureReason) : failureReason;
 
-        if (content is not null)
+        //if (content is not null)
+        //{
+        //    return TypedResults.Json(content, statusCode: statusCode);
+        //}
+
+        if (HasValidContent(content))
         {
             return TypedResults.Json(content, statusCode: statusCode);
         }
@@ -89,8 +95,8 @@ public static class OperationResultExtensions
 
         //problemDetails.Extensions.Add("traceId", Activity.Current?.Id ?? httpContext.TraceIdentifier);
         var activity = httpContext.Features.Get<IHttpActivityFeature>()?.Activity;
-        problemDetails.Extensions.TryAdd("traceId", activity?.Id);
 
+        problemDetails.Extensions.TryAdd("traceId", activity?.Id);
         problemDetails.Extensions.TryAdd("requestId", httpContext.TraceIdentifier);
 
         if (validationErrors?.Any() ?? false)
@@ -111,4 +117,11 @@ public static class OperationResultExtensions
 
         return problemResult;
     }
+
+    private static bool HasValidContent(object? content) => content switch
+    {
+        null => false,
+        JsonElement { ValueKind: JsonValueKind.Undefined } => false,
+        _ => true
+    };
 }
