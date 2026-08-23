@@ -1,4 +1,5 @@
-﻿using System.Text.Json.Serialization;
+﻿using System.Text.Encodings.Web;
+using System.Text.Json.Serialization;
 using AppEngine.Tools.Enums;
 using AppEngine.Tools.Extensions;
 using AppEngine.Tools.Middleware;
@@ -55,9 +56,13 @@ public static class ServiceCollectionExtensions
         {
             services.ConfigureHttpJsonOptions(options =>
             {
-                options.SerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+                //options.SerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
+                options.SerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault;
+
                 options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
                 options.SerializerOptions.Converters.Add(new UtcDateTimeConverter());
+
+                options.SerializerOptions.Encoder = JavaScriptEncoder.UnsafeRelaxedJsonEscaping;
             });
 
             return services;
