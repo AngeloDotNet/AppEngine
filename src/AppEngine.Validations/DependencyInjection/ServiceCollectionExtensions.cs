@@ -1,6 +1,8 @@
 ﻿using AppEngine.Validations.FluentValidation;
+using FluentValidation;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Http;
+using Microsoft.Extensions.DependencyInjection;
 
 namespace AppEngine.Validations.DependencyInjection;
 
@@ -18,6 +20,20 @@ public static class ServiceCollectionExtensions
             builder.AddEndpointFilter<ValidatorFilter<TModel>>().ProducesValidationProblem();
 
             return builder;
+        }
+    }
+
+    extension(IServiceCollection services)
+    {
+        /// <summary>
+        /// Adds all FluentValidation validators from the assembly containing the specified validator type to the service collection.
+        /// </summary>
+        /// <typeparam name="TValidator"></typeparam>
+        /// <returns></returns>
+        public IServiceCollection AddValidatorsFromAssembly<TValidator>()
+        {
+            services.AddValidatorsFromAssemblyContaining<TValidator>();
+            return services;
         }
     }
 }
