@@ -32,11 +32,11 @@ jobs:
         dotnet-version: ${{ env.NET_VERSION }}
         dotnet-quality: 'ga'
 
-    #- name: Build with dotnet
-    #  run: dotnet build --configuration Release
-    #  
-    #- name: Run unit tests
-    #  run: dotnet test
+    - name: Build with dotnet
+      run: dotnet build --configuration Release
+      
+    - name: Run unit tests
+      run: dotnet test --configuration Release --no-build
 
     - name: Nerdbank.GitVersioning 
       uses: dotnet/nbgv@v0.5

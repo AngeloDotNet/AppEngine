@@ -1,5 +1,4 @@
 name: Publish AppEngine on BaGet
-#name: Publish AppEngine on GitHub and NuGet
  
 permissions:
   contents: write
@@ -24,26 +23,23 @@ jobs:
 
     steps:
     - name: Checkout
-      # uses: actions/checkout@v4
       uses: actions/checkout@v7
       with:
         fetch-depth: 0 # avoid shallow clone so nbgv can do its work.
 
     - name: Setup .NET SDK ${{ env.NET_VERSION }}
-      # uses: actions/setup-dotnet@v4
       uses: actions/setup-dotnet@v6
       with:
         dotnet-version: ${{ env.NET_VERSION }}
         dotnet-quality: 'ga'
 
-    #- name: Build with dotnet
-    #  run: dotnet build --configuration Release
-    #  
-    #- name: Run unit tests
-    #  run: dotnet test
+    - name: Build with dotnet
+      run: dotnet build --configuration Release
+      
+    - name: Run unit tests
+      run: dotnet test --configuration Release --no-build
 
     - name: Nerdbank.GitVersioning 
-      # uses: dotnet/nbgv@v0.4
       uses: dotnet/nbgv@v0.5
       id: nbgv
       with:        
