@@ -307,3 +307,10 @@ dotnet_diagnostic.IDE0305.severity = none
 
 # CA1873: Avoid potentially expensive logging
 dotnet_diagnostic.CA1873.severity = none
+# CA1708: false positive on C# 14 extension blocks (compiler-generated member names)
+dotnet_diagnostic.CA1708.severity = none
+
+# CA1000, CA1051, CA1716: public API design rules, fixing them would be a breaking change
+dotnet_diagnostic.CA1000.severity = suggestion
+dotnet_diagnostic.CA1051.severity = suggestion
+dotnet_diagnostic.CA1716.severity = suggestion
