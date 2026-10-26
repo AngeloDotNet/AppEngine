@@ -2,7 +2,6 @@
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Http.Features;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.AspNetCore.Routing;
 using Microsoft.AspNetCore.WebUtilities;
 using Microsoft.Extensions.DependencyInjection;
 
@@ -26,7 +25,6 @@ public static class OperationResultExtensions
         {
             if (result.Success)
             {
-                var routeValueDictionary = new RouteValueDictionary(routeValues);
                 return TypedResults.CreatedAtRoute(routeName, routeValues);
             }
 
@@ -47,7 +45,6 @@ public static class OperationResultExtensions
                 {
                     if (!string.IsNullOrWhiteSpace(routeName))
                     {
-                        var routeValueDictionary = new RouteValueDictionary(routeValues);
                         return TypedResults.CreatedAtRoute(result.Content, routeName, routeValues);
                     }
                     else if (result.Content is StreamFileContent streamFileContent)
@@ -74,11 +71,6 @@ public static class OperationResultExtensions
         var options = httpContext.RequestServices.GetService<OperationResultOptions>() ?? new OperationResultOptions();
         var statusCode = options.MapStatusCodes ? options.GetStatusCode(failureReason) : failureReason;
 
-        //if (content is not null)
-        //{
-        //    return TypedResults.Json(content, statusCode: statusCode);
-        //}
-
         if (HasValidContent(content))
         {
             return TypedResults.Json(content, statusCode: statusCode);
@@ -89,11 +81,9 @@ public static class OperationResultExtensions
             Status = statusCode,
             Title = title ?? ReasonPhrases.GetReasonPhrase(statusCode),
             Detail = detail,
-            //Instance = httpContext.Request.Path
             Instance = $"{httpContext.Request.Method} {httpContext.Request.Path}"
         };
 
-        //problemDetails.Extensions.Add("traceId", Activity.Current?.Id ?? httpContext.TraceIdentifier);
         var activity = httpContext.Features.Get<IHttpActivityFeature>()?.Activity;
 
         problemDetails.Extensions.TryAdd("traceId", activity?.Id);

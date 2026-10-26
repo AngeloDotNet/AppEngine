@@ -56,7 +56,6 @@ public static class ServiceCollectionExtensions
         {
             services.ConfigureHttpJsonOptions(options =>
             {
-                //options.SerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingNull;
                 options.SerializerOptions.DefaultIgnoreCondition = JsonIgnoreCondition.WhenWritingDefault;
 
                 options.SerializerOptions.Converters.Add(new JsonStringEnumConverter());
@@ -142,7 +141,6 @@ public static class ServiceCollectionExtensions
                     if (apiOptionSettings.AddSimpleAuthentication)
                     {
                         // Enable OpenAPI integration for simple authentication.
-                        //options.AddSimpleAuthentication(configuration, "JwtSettings");
                         options.AddSimpleAuthentication(configuration, apiOptionSettings.SimpleAuthenticationSectionName);
                     }
 
@@ -201,10 +199,6 @@ public static class ServiceCollectionExtensions
             var options = new ApiVersioningOptions
             {
                 ApiVersionReader = new UrlSegmentApiVersionReader(),
-                //DefaultApiVersion = new ApiVersion(1),
-                //ApiVersionReader = new UrlSegmentApiVersionReader(),
-                //ReportApiVersions = true,
-                //AssumeDefaultVersionWhenUnspecified = true
             };
 
             return options;
@@ -266,7 +260,6 @@ public static class ServiceCollectionExtensions
 
                     // In this example, we mark the first API version as the default. Adjust this logic as needed based on your versioning strategy.
                     var isDefault = false;
-                    //var isDefault = i == descriptions.Count - 1;
 
                     if (descriptionsCount > 1)
                     {
