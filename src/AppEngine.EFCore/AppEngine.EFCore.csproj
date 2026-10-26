@@ -37,7 +37,4 @@
       <PackageReference Include="Microsoft.EntityFrameworkCore.Relational" Version="10.0.14" />
     </ItemGroup>
 
-    <ItemGroup>
-      <PackageReference Update="Nerdbank.GitVersioning" Version="3.10.94" />
-    </ItemGroup>
 </Project>
