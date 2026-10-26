@@ -3,7 +3,7 @@ using Microsoft.OpenApi;
 
 namespace AppEngine.Tools.OpenApi;
 
-internal class RemoveServerListDocumentTransformer : IOpenApiDocumentTransformer
+internal sealed class RemoveServerListDocumentTransformer : IOpenApiDocumentTransformer
 {
     public Task TransformAsync(OpenApiDocument document, OpenApiDocumentTransformerContext context, CancellationToken cancellationToken)
     {

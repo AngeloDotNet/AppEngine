@@ -4,7 +4,7 @@ using Microsoft.OpenApi;
 
 namespace AppEngine.Tools.OpenApi.Filters;
 
-internal class OpenApiParametersOperationFilter(OpenApiOperationOptions options) : IOpenApiOperationTransformer
+internal sealed class OpenApiParametersOperationFilter(OpenApiOperationOptions options) : IOpenApiOperationTransformer
 {
     public Task TransformAsync(OpenApiOperation operation, OpenApiOperationTransformerContext context, CancellationToken cancellationToken)
     {

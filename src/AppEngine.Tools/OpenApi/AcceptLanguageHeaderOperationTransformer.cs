@@ -7,7 +7,7 @@ using Microsoft.OpenApi;
 
 namespace AppEngine.Tools.OpenApi;
 
-internal class AcceptLanguageHeaderOperationTransformer(IOptions<RequestLocalizationOptions> requestLocalizationOptions) : IOpenApiOperationTransformer
+internal sealed class AcceptLanguageHeaderOperationTransformer(IOptions<RequestLocalizationOptions> requestLocalizationOptions) : IOpenApiOperationTransformer
 {
     private readonly List<JsonNode>? supportedLanguages = requestLocalizationOptions.Value.SupportedCultures?.Select(c
         => JsonValue.Create(c.Name)).Cast<JsonNode>().ToList();

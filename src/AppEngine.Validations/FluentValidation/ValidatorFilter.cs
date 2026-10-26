@@ -6,7 +6,7 @@ using Microsoft.Extensions.Options;
 
 namespace AppEngine.Validations.FluentValidation;
 
-internal class ValidatorFilter<TModel>(IValidator<TModel> validator, IOptions<ValidationOptions> options) : IEndpointFilter where TModel : class
+internal sealed class ValidatorFilter<TModel>(IValidator<TModel> validator, IOptions<ValidationOptions> options) : IEndpointFilter where TModel : class
 {
     private readonly ValidationOptions validationOptions = options.Value;
 

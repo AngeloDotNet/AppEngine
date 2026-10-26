@@ -8,7 +8,7 @@ using Microsoft.OpenApi;
 
 namespace AppEngine.Tools.OpenApi.SimpleAuthentication;
 
-internal class AuthenticationDocumentTransformer(IConfiguration configuration, string sectionName, IEnumerable<OpenApiSecurityRequirement> additionalSecurityRequirements, IEnumerable<string> additionalSecurityDefinitionNames) : IOpenApiDocumentTransformer
+internal sealed class AuthenticationDocumentTransformer(IConfiguration configuration, string sectionName, IEnumerable<OpenApiSecurityRequirement> additionalSecurityRequirements, IEnumerable<string> additionalSecurityDefinitionNames) : IOpenApiDocumentTransformer
 {
     public Task TransformAsync(OpenApiDocument document, OpenApiDocumentTransformerContext context, CancellationToken cancellationToken)
     {

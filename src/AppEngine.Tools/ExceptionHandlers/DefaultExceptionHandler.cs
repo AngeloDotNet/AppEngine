@@ -7,7 +7,7 @@ using Microsoft.Extensions.Hosting;
 
 namespace AppEngine.Tools.ExceptionHandlers;
 
-internal class DefaultExceptionHandler(IProblemDetailsService problemDetailsService, IWebHostEnvironment webHostEnvironment) : IExceptionHandler
+internal sealed class DefaultExceptionHandler(IProblemDetailsService problemDetailsService, IWebHostEnvironment webHostEnvironment) : IExceptionHandler
 {
     public async ValueTask<bool> TryHandleAsync(HttpContext httpContext, Exception exception, CancellationToken cancellationToken)
     {

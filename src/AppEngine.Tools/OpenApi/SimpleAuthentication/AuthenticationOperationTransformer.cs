@@ -8,7 +8,7 @@ using Microsoft.OpenApi;
 
 namespace AppEngine.Tools.OpenApi.SimpleAuthentication;
 
-internal class AuthenticationOperationTransformer(IAuthorizationPolicyProvider authorizationPolicyProvider) : IOpenApiOperationTransformer
+internal sealed class AuthenticationOperationTransformer(IAuthorizationPolicyProvider authorizationPolicyProvider) : IOpenApiOperationTransformer
 {
     public async Task TransformAsync(OpenApiOperation operation, OpenApiOperationTransformerContext context, CancellationToken cancellationToken)
     {

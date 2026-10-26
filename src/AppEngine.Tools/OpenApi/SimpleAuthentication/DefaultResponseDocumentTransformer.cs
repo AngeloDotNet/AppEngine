@@ -4,7 +4,7 @@ using Microsoft.OpenApi;
 
 namespace AppEngine.Tools.OpenApi.SimpleAuthentication;
 
-internal class DefaultResponseDocumentTransformer : IOpenApiDocumentTransformer
+internal sealed class DefaultResponseDocumentTransformer : IOpenApiDocumentTransformer
 {
     public async Task TransformAsync(OpenApiDocument document, OpenApiDocumentTransformerContext context, CancellationToken cancellationToken)
     {

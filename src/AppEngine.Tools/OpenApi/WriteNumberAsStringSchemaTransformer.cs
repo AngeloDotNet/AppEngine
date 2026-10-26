@@ -5,7 +5,7 @@ using Microsoft.OpenApi;
 
 namespace AppEngine.Tools.OpenApi;
 
-internal class WriteNumberAsStringSchemaTransformer : IOpenApiSchemaTransformer
+internal sealed class WriteNumberAsStringSchemaTransformer : IOpenApiSchemaTransformer
 {
     public Task TransformAsync(OpenApiSchema schema, OpenApiSchemaTransformerContext context, CancellationToken cancellationToken)
     {

@@ -4,7 +4,7 @@ using Microsoft.OpenApi;
 
 namespace AppEngine.Tools.OpenApi.SimpleAuthentication;
 
-internal class KeyCloakAuthenticationDocumentTransformer(string name, OpenApiOAuthFlow authFlow) : IOpenApiDocumentTransformer
+internal sealed class KeyCloakAuthenticationDocumentTransformer(string name, OpenApiOAuthFlow authFlow) : IOpenApiDocumentTransformer
 {
     public Task TransformAsync(OpenApiDocument document, OpenApiDocumentTransformerContext context, CancellationToken cancellationToken)
     {

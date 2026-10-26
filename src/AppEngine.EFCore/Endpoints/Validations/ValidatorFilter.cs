@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Http;
 
 namespace AppEngine.EFCore.Endpoints.Validations;
 
-internal class ValidatorFilter<TModel>(IValidator<TModel> validator) : IEndpointFilter where TModel : class
+internal sealed class ValidatorFilter<TModel>(IValidator<TModel> validator) : IEndpointFilter where TModel : class
 {
     public async ValueTask<object?> InvokeAsync(EndpointFilterInvocationContext context, EndpointFilterDelegate next)
     {
